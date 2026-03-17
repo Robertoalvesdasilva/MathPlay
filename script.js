@@ -1,4 +1,5 @@
-const API_BASE_URL = window.location.hostname === "127.0.0.1" ? "http://127.0.0.1:5000" : "SUA_URL_DO_RENDER_AQUI";
+// Substitua o localhost pelo link que o Render te deu
+const API_BASE_URL = 'https://mathplay-api.onrender.com';
 
 async function handleLogin() {
     const username = document.getElementById('login-username').value;

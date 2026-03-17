@@ -1,8 +1,5 @@
-// Se o endereço for localhost ou 127.0.0.1, usa o servidor local. 
-// Caso contrário, usa o link do Render (que vamos criar).
-const API_BASE_URL = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" 
-    ? "http://127.0.0.1:5000" 
-    : "https://seu-projeto-backend.onrender.com";
+// Substitua o localhost pelo link que o Render te deu
+const API_BASE_URL = 'https://mathplay-api.onrender.com';
 
 // Variáveis de Estado do Jogo
 let currentUserId = null, currentUsername = null, token = null;

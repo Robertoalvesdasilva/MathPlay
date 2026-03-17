@@ -1,4 +1,5 @@
-const API_BASE_URL = 'http://127.0.0.1:5000';
+// Substitua o localhost pelo link que o Render te deu
+const API_BASE_URL = 'https://mathplay-api.onrender.com';
 
 // Função que será executada quando o botão for clicado
 function iniciarJogo() {
