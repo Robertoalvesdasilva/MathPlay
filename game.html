@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MathPlay - Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <div class="game-selection-container">
+      <h1>Olá, <span id="welcome-username">...</span>!</h1>
+      <p>Melhor Pontuação: <span id="display-best-score">0</span></p>
+
+      <div class="form-card">
+        <label>Dificuldade:</label>
+        <select id="difficulty-select">
+          <option value="easy">Fácil</option>
+          <option value="medium">Médio</option>
+          <option value="hard">Difícil</option>
+        </select>
+
+        <label>Modalidade:</label>
+        <select id="modality-select">
+          <option value="arithmetic">Aritmética</option>
+          <option value="algebra">Álgebra</option>
+        </select>
+
+        <button id="start-game-button">Começar Jogo</button>
+        <button id="logout-button" style="background: #6c757d;">Sair</button>
+      </div>
+    </div>
+
+    <div class="leaderboard-panel">
+      <h2>Top 10</h2>
+      <ul id="leaderboard-list" class="leaderboard-list">
+        <li>Carregando...</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="game-script.js"></script>
+</body>
+</html>

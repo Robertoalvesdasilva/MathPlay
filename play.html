@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MathPlay - Jogo</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .game-container{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;padding:40px;border-radius:12px;box-shadow:0 8px 16px rgba(0,0,0,.15);max-width:720px;width:92%;margin:24px auto}
+    #game-info{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;width:100%;margin-bottom:14px;font-weight:600;color:#555}
+    .stat{padding:6px 10px;border-radius:8px;background:#f1f5f9}
+    #question{font-size:2.5em;margin:12px 0;color:#007bff;font-weight:800;text-align:center}
+    #answer-input{padding:14px;font-size:1.4em;width:100%;max-width:320px;border:2px solid #a0d9e9;border-radius:8px;margin:8px 0;text-align:center}
+    #feedback{margin-top:10px;font-size:1.2em;font-weight:700}
+    .correct{color:#28a745}.incorrect{color:#dc3545}
+    .game-buttons{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+    .lives{letter-spacing:4px;font-size:1.2em}
+    .timer{font-variant-numeric:tabular-nums}
+    progress{width:100%;height:12px}
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>MathPlay - O Jogo!</h1>
+    <div id="game-info">
+      <span class="stat" id="player-name">Jogador: -</span>
+      <span class="stat" id="game-difficulty">Dificuldade: -</span>
+      <span class="stat" id="game-modality">Modalidade: -</span>
+      <span class="stat" id="game-score">Pontuação: 0</span>
+      <span class="stat timer" id="game-timer">Tempo: 03:00</span>
+      <span class="stat lives" id="game-lives">Vidas: ❤❤❤</span>
+      <span class="stat" id="game-progress">Questão: 1/10</span>
+    </div>
+
+    <progress id="round-progress" max="100" value="100"></progress>
+
+    <p id="question">Carregando pergunta...</p>
+    <input type="number" id="answer-input" placeholder="Sua resposta"/>
+    <button id="submit-answer-button">Enviar Resposta</button>
+    <div id="feedback"></div>
+
+    <div class="game-buttons">
+      <button id="next-question-button" style="display:none;">Próxima Pergunta</button>
+      <button id="end-game-button" style="display:none;">Finalizar Jogo</button>
+      <button id="back-to-selection-button">Voltar à Seleção</button>
+      <button id="game-logout-button">Sair</button>
+    </div>
+  </div>
+
+  <!-- Estrutura do Modal de Mensagens (Certifique-se de que está presente!) -->
+  <div id="message-modal-overlay" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h3 id="modal-title"></h3>
+      <p id="modal-message"></p>
+      <button id="modal-close-button">OK</button>
+    </div>
+  </div>
+
+  <script src="play-script.js"></script>
+</body>
+</html>

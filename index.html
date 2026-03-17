@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MathPlay - Login</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>MathPlay</h1>
+
+    <div id="login-form">
+      <h2>Entrar</h2>
+      <input type="text" id="login-username" placeholder="Usuário" required />
+      <input type="password" id="login-password" placeholder="Senha" required />
+      <button id="login-button">Entrar</button>
+      <p>Não tem conta? <a href="#" id="show-register-link">Cadastre-se</a></p>
+    </div>
+
+    <div id="register-form" class="hidden">
+      <h2>Criar Conta</h2>
+      <input type="text" id="register-username" placeholder="Usuário" required />
+      <input type="password" id="register-password" placeholder="Senha" required />
+      <input type="password" id="register-confirm-password" placeholder="Confirmar Senha" required />
+      <button id="register-button">Registrar</button>
+      <p><a href="#" id="show-login-link">Voltar ao Login</a></p>
+    </div>
+  </div>
+
+  <div id="message-modal-overlay" class="hidden">
+    <div class="modal-content">
+      <h3 id="modal-title"></h3>
+      <p id="modal-message"></p>
+      <button id="modal-close-button">Fechar</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
