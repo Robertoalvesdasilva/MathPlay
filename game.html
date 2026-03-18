@@ -8,37 +8,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 <body>
-  <div class="container">
-    <div class="game-selection-container">
-      <h1>Olá, <span id="welcome-username">...</span>!</h1>
-      <p>Melhor Pontuação: <span id="display-best-score">0</span></p>
-
-      <div class="form-card">
-        <label>Dificuldade:</label>
-        <select id="difficulty-select">
-          <option value="easy">Fácil</option>
-          <option value="medium">Médio</option>
-          <option value="hard">Difícil</option>
-        </select>
-
-        <label>Modalidade:</label>
-        <select id="modality-select">
-          <option value="arithmetic">Aritmética</option>
-          <option value="algebra">Álgebra</option>
-        </select>
-
-        <button id="start-game-button">Começar Jogo</button>
-        <button id="logout-button" style="background: #6c757d;">Sair</button>
-      </div>
+  <div class="dashboard-wrapper">
+    <div class="user-header">
+        <h1>Olá, <span id="welcome-username">Jogador</span>! 🚀</h1>
+        <div class="score-badge">
+            <span class="label">SUA MELHOR MARCA</span>
+            <span id="display-best-score">0</span>
+        </div>
     </div>
 
-    <div class="leaderboard-panel">
-      <h2>Top 10</h2>
-      <ul id="leaderboard-list" class="leaderboard-list">
-        <li>Carregando...</li>
-      </ul>
+    <div class="selection-grid">
+        <div class="selection-card">
+            <h2>Configurar Partida</h2>
+            
+            <div class="input-group">
+                <label>Dificuldade</label>
+                <select id="difficulty-select">
+                    <option value="easy">🟢 Fácil</option>
+                    <option value="medium">🟡 Médio</option>
+                    <option value="hard">🔴 Difícil</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Modalidade</label>
+                <select id="modality-select">
+                    <option value="arithmetic">➕ Aritmética</option>
+                    <option value="algebra">✖️ Álgebra</option>
+                </select>
+            </div>
+
+            <button id="start-game-button" class="main-btn">COMEÇAR JOGO</button>
+            <button id="logout-button" class="btn-ghost">Sair da Conta</button>
+        </div>
+
+        <div class="leaderboard-card">
+            <h2>🏆 Top 10 Global</h2>
+            <ul id="leaderboard-list" class="leaderboard-list">
+                <li>Carregando ranking...</li>
+            </ul>
+        </div>
     </div>
-  </div>
+</div>
 
   <script src="game-script.js"></script>
 </body>
