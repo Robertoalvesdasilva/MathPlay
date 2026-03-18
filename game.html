@@ -7,37 +7,34 @@
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="container">
-    <div class="game-selection-container">
-      <h1>Olá, <span id="welcome-username">...</span>!</h1>
-      <p>Melhor Pontuação: <span id="display-best-score">0</span></p>
-
-      <div class="form-card">
-        <label>Dificuldade:</label>
-        <select id="difficulty-select">
-          <option value="easy">Fácil</option>
-          <option value="medium">Médio</option>
-          <option value="hard">Difícil</option>
-        </select>
-
-        <label>Modalidade:</label>
-        <select id="modality-select">
-          <option value="arithmetic">Aritmética</option>
-          <option value="algebra">Álgebra</option>
-        </select>
-
-        <button id="start-game-button">Começar Jogo</button>
-        <button id="logout-button" style="background: #6c757d;">Sair</button>
-      </div>
+<div class="game-wrapper">
+    <div class="game-header">
+        <div class="stat-box">
+            <span class="label">PONTOS</span>
+            <span id="game-score" class="value">0</span>
+        </div>
+        <div class="game-title-mini">
+            <h2>Matematika+</h2>
+        </div>
+        <div class="stat-box">
+            <span class="label">TEMPO</span>
+            <span id="game-timer" class="value">30s</span>
+        </div>
     </div>
 
-    <div class="leaderboard-panel">
-      <h2>Top 10</h2>
-      <ul id="leaderboard-list" class="leaderboard-list">
-        <li>Carregando...</li>
-      </ul>
+    <div class="question-container">
+        <div id="question-text" class="question">15 + 7</div>
+        <div class="answer-section">
+            <input type="number" id="answer-input" placeholder="?" autocomplete="off">
+            <button id="submit-answer">CONFIRMAR</button>
+        </div>
     </div>
-  </div>
+
+    <div class="navigation-footer">
+        <button id="back-to-menu" class="btn-small">Voltar</button>
+        <button id="logout-button" class="btn-small">Sair</button>
+    </div>
+</div>
 
   <script src="game-script.js"></script>
 </body>

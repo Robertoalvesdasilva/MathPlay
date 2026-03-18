@@ -153,3 +153,76 @@ a:hover {
     background: var(--error-color) !important; /* Cor de alerta ao interagir */
     transform: scale(1.05);
 }
+
+/* Layout Principal do Jogo */
+.game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+/* Cabeçalho de Status */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px 25px;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+}
+
+.stat-box {
+    text-align: center;
+}
+
+.stat-box .label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+.stat-box .value {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+/* Cartão da Pergunta */
+.question-container {
+    background: white;
+    color: var(--dark-bg);
+    width: 100%;
+    padding: 50px 30px;
+    border-radius: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.question {
+    font-size: 4rem;
+    font-weight: 900;
+    margin-bottom: 30px;
+    color: var(--primary-color);
+}
+
+/* Input de Resposta Grande */
+#answer-input {
+    width: 150px;
+    font-size: 2rem;
+    text-align: center;
+    border: 3px solid #eee;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+#submit-answer {
+    background: var(--accent-color);
+    font-size: 1.2rem;
+    padding: 15px 40px;
+}
