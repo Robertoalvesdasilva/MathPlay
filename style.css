@@ -76,3 +76,52 @@ input {
     font-size: 0.9rem;
     margin-top: 15px;
 }
+
+/* --- AJUSTES PARA CELULAR --- */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+        align-items: flex-start; /* Começa do topo no celular */
+        padding-top: 30px;
+    }
+
+    .auth-card, .game-container {
+        width: 95%; /* Ocupa quase a tela toda */
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .logo {
+        font-size: 2rem; /* Título menor para caber */
+    }
+
+    /* Aumenta os inputs e botões para o dedo acertar fácil */
+    input, .main-btn {
+        padding: 16px !important;
+        font-size: 1.1rem !important;
+    }
+
+    /* Se você tiver o HUD (pontos/tempo) no topo */
+    .game-header {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .question {
+        font-size: 3rem !important; /* Conta matemática grande, mas nem tanto */
+    }
+
+    /* Botões de voltar/sair no rodapé ficam um ao lado do outro */
+    .navigation-footer {
+        width: 90%;
+        bottom: 10px;
+        gap: 10px;
+    }
+
+    .btn-small {
+        flex: 1; /* Faz os dois botões terem o mesmo tamanho */
+        text-align: center;
+    }
+}
