@@ -123,3 +123,33 @@ a:hover {
     font-weight: 500;
     font-size: 1.1rem;
 }
+
+/* Container que segura os botões no fundo */
+.navigation-footer {
+    position: fixed;
+    bottom: 20px; /* Distância do fundo da tela */
+    left: 50%;
+    transform: translateX(-50%); /* Centraliza horizontalmente */
+    display: flex;
+    gap: 15px; /* Espaço entre os dois botões */
+    width: auto;
+}
+
+/* Estilo específico para botões menores e discretos */
+.btn-small {
+    width: auto !important; /* Cancela a largura total de 100% */
+    padding: 8px 15px !important; /* Diminui o enchimento interno */
+    font-size: 0.85rem !important; /* Diminui o texto */
+    background: rgba(255, 255, 255, 0.2) !important; /* Fica semi-transparente */
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    color: white !important;
+    margin-top: 0 !important;
+    box-shadow: none !important;
+    opacity: 0.7; /* Fica meio "apagadinho" para não chamar atenção */
+}
+
+.btn-small:hover {
+    opacity: 1; /* Só brilha quando o mouse passa em cima */
+    background: var(--error-color) !important; /* Cor de alerta ao interagir */
+    transform: scale(1.05);
+}
