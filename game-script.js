@@ -104,6 +104,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    async function carregarDadosDoUsuario() {
+    const token = localStorage.getItem('mathplay_token');
+    const displayScore = document.getElementById('display-best-score');
+
+    if (!token) {
+        window.location.href = 'index.html'; // Se não tiver logado, volta pro login
+        return;
+    }
+
+    try {
+        // Faz uma chamada para o seu servidor buscar os dados do usuário logado
+        const res = await fetch(`${API_BASE_URL}/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            // Se o servidor retornar a melhor pontuação (best_score)
+            if (displayScore) {
+                displayScore.innerText = data.best_score || 0;
+            }
+        }
+    } catch (err) {
+        console.error("Erro ao buscar pontuação:", err);
+    }
+}
+
+// Chame essa função dentro do window.onload
+window.onload = function() {
+    // ... seus códigos de nome e frases ...
+    carregarDadosDoUsuario();
+    // ... carregar ranking ...
+};
+
     // 5. Carregar o ranking
     carregarRanking();
 });
