@@ -1,125 +1,78 @@
 :root {
-    --primary-color: #6c5ce7; /* Roxo moderno */
-    --accent-color: #00ce8c;  /* Verde sucesso */
-    --bg-color: #f8f9fa;      /* Cinza clarinho de fundo */
-    --card-bg: #ffffff;
-    --text-main: #2d3436;
-    --text-muted: #636e72;
+    --primary: #6c5ce7;
+    --success: #00ce8c;
+    --bg: #f0f2f5;
 }
 
 body {
     margin: 0;
-    padding: 0;
-    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--bg-color);
-    /* Um degradê bem suave no fundo */
-    background: radial-gradient(circle at top right, #e2e2ff, #f8f9fa);
-    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg);
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
 }
 
-/* O "Corpo" do formulário */
 .auth-card {
-    background: var(--card-bg);
-    width: 100%;
-    max-width: 360px;
-    padding: 40px;
-    border-radius: 24px;
-    /* Sombra suave para dar profundidade */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    text-align: center;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    width: 320px;
 }
 
-/* Estilo do Logo Matematika+ */
+/* --- CORREÇÃO DO TÍTULO --- */
 .logo {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 900;
     margin: 0;
-
-    /* 1. Defina o degradê que você quer */
-    background: linear-gradient(45deg, #6c5ce7, #00ce8c);
-
-    /* 2. O CORTE: Diz para o fundo ficar "preso" dentro das letras */
+    text-align: center;
+    
+    /* Gradiente */
+    background: linear-gradient(45deg, var(--primary), var(--success));
+    
+    /* O segredo para funcionar em todos os navegadores */
     -webkit-background-clip: text;
-    background-clip: text;
-
-    /* 3. A TRANSPARÊNCIA: Torna a cor da letra invisível para o fundo aparecer */
+    background-clip: text; 
     -webkit-text-fill-color: transparent;
-    color: transparent; /* Backup para outros navegadores */
-
-    /* Extra: sombra para dar profundidade */
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    
+    /* Caso o navegador seja muito antigo, ele usa essa cor: */
+    color: var(--primary); 
 }
 
 .tagline {
-    color: var(--text-muted);
-    font-size: 1rem;
-    margin-bottom: 30px;
+    text-align: center;
+    margin-top: 5px;
+    color: #888;
+    font-weight: bold;
 }
 
-/* Inputs elegantes */
+/* --- INPUTS E BOTÕES --- */
 input {
     width: 100%;
-    padding: 14px 18px;
-    margin-bottom: 15px;
-    border: 1.5px solid #eee;
-    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     box-sizing: border-box;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background-color: #fdfdfd;
 }
 
-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
-    background-color: #fff;
-}
-
-/* Botão Principal */
 .main-btn {
     width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 12px;
-    background: var(--primary-color);
+    padding: 12px;
+    background: var(--primary);
     color: white;
-    font-size: 1rem;
-    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s, background 0.3s;
-    margin-top: 10px;
 }
 
-.main-btn:hover {
-    background: #5b4cc4;
-    transform: translateY(-2px);
-}
+.hidden { display: none; }
 
-.main-btn:active {
-    transform: translateY(0);
-}
-
-/* Links de trocar tela */
 .switch-text {
-    margin-top: 25px;
+    text-align: center;
     font-size: 0.9rem;
-    color: var(--text-muted);
-}
-
-.switch-text a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 700;
-}
-
-.switch-text a:hover {
-    text-decoration: underline;
-}
-
-.hidden {
-    display: none;
+    margin-top: 15px;
 }
