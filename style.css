@@ -1,228 +1,87 @@
-/* Configurações Gerais */
+/* Globais e Mobile First */
 :root {
-    --primary-color: #6c5ce7;
-    --secondary-color: #a29bfe;
-    --accent-color: #00ce8c;
-    --error-color: #ff7675;
-    --bg-gradient: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
-    --dark-bg: #2d3436;
+    --primary: #007bff;
+    --bg: #e0f2f7;
+    --card: #ffffff;
 }
 
 body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background-color: var(--bg);
     margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--bg-gradient);
-    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: white;
+    min-height: 100vh;
+    padding: 10px;
 }
 
-/* Container de Autenticação (Login/Registro) */
-.auth-container {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 20px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
     width: 100%;
-    max-width: 400px;
-    color: var(--dark-bg);
-    text-align: center;
-    transition: transform 0.3s ease;
+    max-width: 1100px;
 }
 
-.auth-container:hover {
-    transform: translateY(-5px);
-}
-
-h1 {
-    font-size: 3.5rem;
-    margin-bottom: 0.5rem;
-    /* O degradê que vai aparecer dentro das letras */
-    background: linear-gradient(45deg, #6c5ce7, #00ce8c);
-    
-    /* As propriedades mágicas para o degradê entrar no texto */
-    -webkit-background-clip: text;
-    background-clip: text; 
-    -webkit-text-fill-color: transparent;
-    
-    /* Garantia para navegadores que não suportam o efeito */
-    color: #6c5ce7; 
-    
-    font-weight: 800;
-    text-align: center;
-    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
-}
-/* Estilização dos Inputs */
-input {
+.auth-container, .game-selection-container, .leaderboard-panel, .game-container {
+    background: var(--card);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     width: 100%;
-    padding: 12px 15px;
-    margin: 10px 0;
-    border: 2px solid #eee;
-    border-radius: 10px;
     box-sizing: border-box;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
 }
 
-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-}
+.auth-container, .game-selection-container { max-width: 400px; }
+.game-container { max-width: 700px; }
+.leaderboard-panel { max-width: 450px; flex: 1 1 300px; }
 
-/* Botões Estilo "Gamer" */
-button {
+/* Inputs e Botões Responsivos */
+input, select, button {
     width: 100%;
-    padding: 15px;
-    margin-top: 15px;
-    border: none;
-    border-radius: 10px;
-    background: var(--primary-color);
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px; /* Evita zoom no mobile */
+}
+
+button {
+    background: var(--primary);
     color: white;
-    font-size: 1.1rem;
+    border: none;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
-button:hover {
-    background: #5b4cc4;
-    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
-    transform: scale(1.02);
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-/* Links */
-a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 600;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* Utilitários */
-.hidden {
-    display: none;
-}
-
-
-.subtitle {
-    margin-top: -10px;
+/* Grelha de Informações do Jogo */
+#game-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
     margin-bottom: 20px;
-    color: #666;
-    font-weight: 500;
-    font-size: 1.1rem;
 }
 
-/* Container que segura os botões no fundo */
-.navigation-footer {
-    position: fixed;
-    bottom: 20px; /* Distância do fundo da tela */
-    left: 50%;
-    transform: translateX(-50%); /* Centraliza horizontalmente */
-    display: flex;
-    gap: 15px; /* Espaço entre os dois botões */
-    width: auto;
-}
-
-/* Estilo específico para botões menores e discretos */
-.btn-small {
-    width: auto !important; /* Cancela a largura total de 100% */
-    padding: 8px 15px !important; /* Diminui o enchimento interno */
-    font-size: 0.85rem !important; /* Diminui o texto */
-    background: rgba(255, 255, 255, 0.2) !important; /* Fica semi-transparente */
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
-    color: white !important;
-    margin-top: 0 !important;
-    box-shadow: none !important;
-    opacity: 0.7; /* Fica meio "apagadinho" para não chamar atenção */
-}
-
-.btn-small:hover {
-    opacity: 1; /* Só brilha quando o mouse passa em cima */
-    background: var(--error-color) !important; /* Cor de alerta ao interagir */
-    transform: scale(1.05);
-}
-
-/* Layout Principal do Jogo */
-.game-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 600px;
-    padding: 20px;
-}
-
-/* Cabeçalho de Status */
-.game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 30px;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 15px 25px;
-    border-radius: 50px;
-    backdrop-filter: blur(10px);
-}
-
-.stat-box {
+.stat {
+    background: #f1f5f9;
+    padding: 8px;
+    border-radius: 5px;
     text-align: center;
-}
-
-.stat-box .label {
-    display: block;
-    font-size: 0.7rem;
+    font-size: 0.85rem;
     font-weight: bold;
-    color: var(--secondary-color);
 }
 
-.stat-box .value {
-    font-size: 1.5rem;
-    font-weight: 800;
-}
-
-/* Cartão da Pergunta */
-.question-container {
-    background: white;
-    color: var(--dark-bg);
-    width: 100%;
-    padding: 50px 30px;
-    border-radius: 30px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+#question {
+    font-size: 2.2rem;
     text-align: center;
+    color: var(--primary);
 }
 
-.question {
-    font-size: 4rem;
-    font-weight: 900;
-    margin-bottom: 30px;
-    color: var(--primary-color);
-}
+.hidden { display: none !important; }
 
-/* Input de Resposta Grande */
-#answer-input {
-    width: 150px;
-    font-size: 2rem;
-    text-align: center;
-    border: 3px solid #eee;
-    border-radius: 15px;
-    margin-bottom: 20px;
-}
-
-#submit-answer {
-    background: var(--accent-color);
-    font-size: 1.2rem;
-    padding: 15px 40px;
+@media (max-width: 600px) {
+    #question { font-size: 1.6rem; }
+    .container { flex-direction: column; }
 }
