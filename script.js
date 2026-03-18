@@ -1,44 +1,36 @@
 const API_BASE_URL = 'https://mathplay-api.onrender.com';
 
-// Isso vai avisar logo de cara se o arquivo carregou
-console.log("Script MathPlay carregado!");
-
-// Aguarda o HTML carregar totalmente antes de procurar os botões
-window.onload = function() {
-    console.log("Página pronta!");
-
+// Aguarda o navegador carregar o HTML
+window.onload = () => {
     const loginForm = document.getElementById('login-form');
     const registerForm = document.getElementById('register-form');
-    const showRegister = document.getElementById('show-register-link');
-    const showLogin = document.getElementById('show-login-link');
-
-    // Trocar para formulário de Registro
-    showRegister.onclick = function(e) {
+    
+    // --- ALTERNAR ENTRE TELAS ---
+    
+    // Ir para Registro
+    document.getElementById('show-register').onclick = (e) => {
         e.preventDefault();
-        console.log("Mostrando registro...");
         loginForm.classList.add('hidden');
         registerForm.classList.remove('hidden');
     };
 
-    // Trocar para formulário de Login
-    showLogin.onclick = function(e) {
+    // Voltar para Login
+    document.getElementById('show-login').onclick = (e) => {
         e.preventDefault();
-        console.log("Mostrando login...");
         registerForm.classList.add('hidden');
         loginForm.classList.remove('hidden');
     };
 
-    // Botão de Login
-    document.getElementById('login-button').onclick = async function() {
+    // --- LÓGICA DE LOGIN ---
+    
+    document.getElementById('login-button').onclick = async () => {
         const user = document.getElementById('login-username').value;
         const pass = document.getElementById('login-password').value;
 
         if (!user || !pass) {
-            alert("Preencha usuário e senha!");
+            alert("Preencha todos os campos!");
             return;
         }
-
-        alert("Tentando entrar... Aguarde o servidor acordar!");
 
         try {
             const res = await fetch(`${API_BASE_URL}/login`, {
@@ -50,15 +42,43 @@ window.onload = function() {
 
             if (res.ok) {
                 localStorage.setItem('mathplay_token', data.access_token);
-                localStorage.setItem('mathplay_username', data.username);
-                localStorage.setItem('mathplay_user_id', data.user_id);
-                window.location.href = 'game.html';
+                window.location.href = 'game.html'; // Vai para o jogo
             } else {
-                alert("Erro: " + (data.message || "Usuário ou senha inválidos"));
+                alert("Erro: " + data.message);
             }
         } catch (err) {
-            console.error(err);
-            alert("Servidor fora do ar ou acordando. Tente novamente em 30 segundos.");
+            alert("O servidor está acordando... Tente novamente em alguns segundos!");
+        }
+    };
+
+    // --- LÓGICA DE REGISTRO ---
+
+    document.getElementById('register-button').onclick = async () => {
+        const user = document.getElementById('register-username').value;
+        const pass = document.getElementById('register-password').value;
+        const confirm = document.getElementById('register-confirm').value;
+
+        if (pass !== confirm) {
+            alert("As senhas não coincidem!");
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                alert("Conta criada com sucesso! Agora faça login.");
+                location.reload(); // Recarrega para voltar ao login
+            } else {
+                alert("Erro: " + data.message);
+            }
+        } catch (err) {
+            alert("Erro ao conectar com o servidor.");
         }
     };
 };

@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MathPlay - Login</title>
-  <link rel="stylesheet" href="style.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematika+ (bom 👍)</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="auth-container">
-    <h1>MathPlay</h1>
+    <div class="auth-wrapper">
+        <div class="brand">
+            <h1 class="logo">Matematika+</h1>
+            <p class="tagline">(bom 👍)</p>
+        </div>
 
-    <div id="login-form">
-      <h2>Entrar</h2>
-      <input type="text" id="login-username" placeholder="Usuário" required />
-      <input type="password" id="login-password" placeholder="Senha" required />
-      <button id="login-button">Entrar</button>
-      <p>Não tem conta? <a href="#" id="show-register-link">Cadastre-se</a></p>
+        <div class="auth-card">
+            <div id="login-form">
+                <h2>Bem-vindo de volta!</h2>
+                <div class="input-group">
+                    <input type="text" id="login-username" placeholder="Usuário" required>
+                    <input type="password" id="login-password" placeholder="Senha" required>
+                </div>
+                <button id="login-button" class="main-btn">ENTRAR</button>
+                <p class="switch-text">Novo por aqui? <a href="#" id="show-register">Criar conta</a></p>
+            </div>
+
+            <div id="register-form" class="hidden">
+                <h2>Criar nova conta</h2>
+                <div class="input-group">
+                    <input type="text" id="register-username" placeholder="Escolha um usuário" required>
+                    <input type="password" id="register-password" placeholder="Crie uma senha" required>
+                    <input type="password" id="register-confirm" placeholder="Confirme a senha" required>
+                </div>
+                <button id="register-button" class="main-btn">CADASTRAR</button>
+                <p class="switch-text">Já tem conta? <a href="#" id="show-login">Fazer Login</a></p>
+            </div>
+        </div>
     </div>
 
-    <div id="register-form" class="hidden">
-      <h2>Criar Conta</h2>
-      <input type="text" id="register-username" placeholder="Usuário" required />
-      <input type="password" id="register-password" placeholder="Senha" required />
-      <input type="password" id="register-confirm-password" placeholder="Confirmar Senha" required />
-      <button id="register-button">Registrar</button>
-      <p><a href="#" id="show-login-link">Voltar ao Login</a></p>
-    </div>
-  </div>
-
-  <div id="message-modal-overlay" class="hidden">
-    <div class="modal-content">
-      <h3 id="modal-title"></h3>
-      <p id="modal-message"></p>
-      <button id="modal-close-button">Fechar</button>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
