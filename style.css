@@ -89,16 +89,33 @@ input {
 
 .user-header {
     text-align: center;
-    color: white;
+    margin-bottom: 20px;
+    color: var(--text-main); /* Mudamos para uma cor escura ou sólido */
+}
+
+.user-header h1 {
+    font-size: 2.2rem;
+    color: var(--primary-color); /* Usa o roxo principal */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1); /* Sombra leve para leitura */
+    margin-bottom: 5px;
 }
 
 .score-badge {
-    background: rgba(255, 255, 255, 0.2);
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: 50px;
-    backdrop-filter: blur(5px);
+    background: white; /* Fundo branco sólido para contraste total */
+    display: inline-flex;
+    flex-direction: column;
+    padding: 12px 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.2); /* Sombra colorida */
+    border: 2px solid var(--primary-color); /* Borda para definir o limite */
     margin-top: 10px;
+}
+
+.score-badge #display-best-score {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary-color); /* O número fica em destaque */
+    line-height: 1;
 }
 
 /* Grid Responsivo: Lado a Lado no PC, Empilhado no Celular */
