@@ -166,7 +166,15 @@ select {
 
 .leaderboard-list li:nth-child(1) { color: #f1c40f; font-size: 1.2rem; } /* Ouro */
 
-
+#motivation-phrase {
+    font-style: italic;
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    /* Um leve brilho para chamar atenção */
+    text-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
+}
 
 
 /* --- AJUSTES PARA CELULAR --- */

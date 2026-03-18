@@ -4,6 +4,40 @@
 // Deve ficar assim (Substitua pelo SEU link do Render):
 const API_BASE_URL = 'https://mathplay-api.onrender.com';
 
+window.onload = function() {
+    // 1. Pega o nome que salvamos no login
+    const nomeSalvo = localStorage.getItem('mathplay_username');
+    
+    // 2. Procura o lugar no HTML (o <span> com id welcome-username)
+    const campoNome = document.getElementById('welcome-username');
+
+    // 3. Se encontrar o campo e o nome, ele escreve!
+    if (campoNome && nomeSalvo) {
+        campoNome.innerText = nomeSalvo;
+    } else if (campoNome) {
+        campoNome.innerText = "Jogador"; // Caso não ache o nome, não fica vazio
+    }
+
+    // 2. Sistema de Frases de Motivação
+    const frases = [
+        "O topo do ranking espera por você! 🏆",
+        "Cada acerto te deixa mais perto do 1º lugar!",
+        "Mostre que você é o mestre dos números! 🧠",
+        "O ranking global é o seu próximo desafio!",
+        "Quem será o próximo número 1? Pode ser você! 🔥",
+        "Desafie seus limites e suba no Top 10!",
+        "Matematika+ é para os fortes. Vamos pra cima! 👍"
+    ];
+    const campoFrase = document.getElementById('motivation-phrase');
+    if (campoFrase) {
+        // Escolhe uma frase aleatória da lista
+        const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
+        campoFrase.innerText = fraseAleatoria;
+    }
+    
+};
+
+
 // Função que será executada quando o botão for clicado
 function iniciarJogo() {
     console.log("Botão clicado! Preparando o jogo...");

@@ -91,6 +91,7 @@ window.onload = function() {
 
                 if (res.ok) {
                     localStorage.setItem('mathplay_token', data.access_token);
+                    localStorage.setItem('mathplay_username', user);                    
                     window.location.href = 'game.html'; 
                 } else {
                     alert("Usuário ou senha incorretos.");
