@@ -1,24 +1,61 @@
-// Antes estava assim:
-// const API_BASE_URL = 'http://127.0.0.1:5000';
-
-// Deve ficar assim (Substitua pelo SEU link do Render):
+// Link do seu servidor no Render
 const API_BASE_URL = 'https://mathplay-api.onrender.com';
 
-window.onload = function() {
-    // 1. Pega o nome que salvamos no login
-    const nomeSalvo = localStorage.getItem('mathplay_username');
-    
-    // 2. Procura o lugar no HTML (o <span> com id welcome-username)
-    const campoNome = document.getElementById('welcome-username');
+// --- 1. FUNÇÕES DE BUSCA DE DADOS ---
 
-    // 3. Se encontrar o campo e o nome, ele escreve!
-    if (campoNome && nomeSalvo) {
-        campoNome.innerText = nomeSalvo;
-    } else if (campoNome) {
-        campoNome.innerText = "Jogador"; // Caso não ache o nome, não fica vazio
+// Busca a Melhor Pontuação e Nome Real do Servidor
+async function carregarDadosDoUsuario() {
+    const token = localStorage.getItem('mathplay_token');
+    const displayScore = document.getElementById('display-best-score');
+    const displayUser = document.getElementById('welcome-username');
+
+    if (!token) return;
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+            // Atualiza a pontuação na tela (se vier nulo, coloca 0)
+            if (displayScore) displayScore.innerText = data.best_score || 0;
+            // Garante que o nome exibido seja o do banco de dados
+            if (displayUser) displayUser.innerText = data.username || "Jogador";
+        }
+    } catch (err) {
+        console.error("Erro ao buscar dados do perfil:", err);
     }
+}
 
-    // 2. Sistema de Frases de Motivação
+// Carrega o Top 10 Global
+async function carregarRanking() {
+    const listaUI = document.getElementById('leaderboard-list');
+    try {
+        const response = await fetch(`${API_BASE_URL}/leaderboard`);
+        const dados = await response.json();
+        
+        if (!listaUI) return;
+
+        if (dados.length === 0) {
+            listaUI.innerHTML = "<li>Nenhum recorde ainda! 🚀</li>";
+            return;
+        }
+
+        listaUI.innerHTML = dados.map((item, index) => `
+            <li>
+                <strong>${index + 1}º</strong> ${item.username} - ${item.score} pts
+            </li>
+        `).join('');
+    } catch (erro) {
+        console.error("Erro ao carregar ranking:", erro);
+        if (listaUI) listaUI.innerHTML = "<li>Servidor Offline</li>";
+    }
+}
+
+// --- 2. FUNÇÕES DE INTERFACE ---
+
+function exibirFraseMotivacional() {
     const frases = [
         "O topo do ranking espera por você! 🏆",
         "Cada acerto te deixa mais perto do 1º lugar!",
@@ -30,72 +67,42 @@ window.onload = function() {
     ];
     const campoFrase = document.getElementById('motivation-phrase');
     if (campoFrase) {
-        // Escolhe uma frase aleatória da lista
         const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
         campoFrase.innerText = fraseAleatoria;
     }
-    
-};
+}
 
-
-// Função que será executada quando o botão for clicado
 function iniciarJogo() {
-    console.log("Botão clicado! Preparando o jogo...");
-
     const dificuldade = document.getElementById('difficulty-select').value;
     const modalidade = document.getElementById('modality-select').value;
-
-    // Constrói a URL para a página de jogo com os parâmetros
-    const urlDestino = `play.html?difficulty=${dificuldade}&modality=${modalidade}`;
     
-    console.log("Redirecionando para:", urlDestino);
-    window.location.href = urlDestino;
+    // Redireciona com os parâmetros de dificuldade
+    window.location.href = `play.html?difficulty=${dificuldade}&modality=${modalidade}`;
 }
 
-// Carregar o Ranking do Servidor
-async function carregarRanking() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/leaderboard`);
-        const dados = await response.json();
-        const listaUI = document.getElementById('leaderboard-list');
-        
-        if (dados.length === 0) {
-            listaUI.innerHTML = "<li>Nenhum recorde ainda!</li>";
-            return;
-        }
+// --- 3. INICIALIZAÇÃO (EVENT LISTENER ÚNICO) ---
 
-        listaUI.innerHTML = dados.map((item, index) => `
-            <li>
-                <strong>${index + 1}º</strong> ${item.username} - ${item.score} pts
-            </li>
-        `).join('');
-    } catch (erro) {
-        console.error("Erro ao carregar ranking:", erro);
-        document.getElementById('leaderboard-list').innerHTML = "<li>Servidor Offline</li>";
-    }
-}
-
-// Configurações iniciais ao carregar a página
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('mathplay_token');
-    const username = localStorage.getItem('mathplay_username');
 
-    // 1. Verificação de segurança (Login)
+    // Segurança: Se não tiver token, volta para o login
     if (!token) {
         window.location.href = 'index.html';
         return;
     }
 
-    // 2. Preencher dados do jogador na tela
-    document.getElementById('welcome-username').innerText = username || 'Jogador';
-    
-    // 3. Ativar o clique do botão "Começar Jogo"
+    // Carregamento de Dados
+    exibirFraseMotivacional();
+    carregarDadosDoUsuario(); // Aqui carrega a Melhor Pontuação
+    carregarRanking();
+
+    // Configuração do Botão "Começar Jogo"
     const btnComecar = document.getElementById('start-game-button');
     if (btnComecar) {
         btnComecar.addEventListener('click', iniciarJogo);
     }
 
-    // 4. Ativar o botão de Sair
+    // Configuração do Botão "Sair"
     const btnSair = document.getElementById('logout-button');
     if (btnSair) {
         btnSair.addEventListener('click', () => {
@@ -103,41 +110,4 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'index.html';
         });
     }
-
-    async function carregarDadosDoUsuario() {
-    const token = localStorage.getItem('mathplay_token');
-    const displayScore = document.getElementById('display-best-score');
-
-    if (!token) {
-        window.location.href = 'index.html'; // Se não tiver logado, volta pro login
-        return;
-    }
-
-    try {
-        // Faz uma chamada para o seu servidor buscar os dados do usuário logado
-        const res = await fetch(`${API_BASE_URL}/me`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const data = await res.json();
-
-        if (res.ok) {
-            // Se o servidor retornar a melhor pontuação (best_score)
-            if (displayScore) {
-                displayScore.innerText = data.best_score || 0;
-            }
-        }
-    } catch (err) {
-        console.error("Erro ao buscar pontuação:", err);
-    }
-}
-
-// Chame essa função dentro do window.onload
-window.onload = function() {
-    // ... seus códigos de nome e frases ...
-    carregarDadosDoUsuario();
-    // ... carregar ranking ...
-};
-
-    // 5. Carregar o ranking
-    carregarRanking();
 });

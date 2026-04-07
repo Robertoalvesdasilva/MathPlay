@@ -9,16 +9,11 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Configurações para Deploy
 DATABASE = 'mathplay.db'
-# Em produção, o servidor define a SECRET_KEY. Se não houver, usa a padrão.
 SECRET_KEY = os.environ.get("SECRET_KEY", "chave-secreta-de-seguranca-123")
 JWT_ALG = 'HS256'
 JWT_EXPIRE_MINUTES = 120
 
-# ====================
-# Banco de Dados
-# ====================
 def get_db():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
@@ -27,142 +22,94 @@ def get_db():
 def init_db():
     db = get_db()
     c = db.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password_hash TEXT NOT NULL,
-            created_at TEXT NOT NULL
-        )
-    ''')
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS scores (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            username TEXT NOT NULL,
-            score INTEGER NOT NULL,
-            difficulty TEXT NOT NULL,
-            modality TEXT NOT NULL,
-            last_updated TEXT NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id)
-        )
-    ''')
+    c.execute('''CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        created_at TEXT NOT NULL)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS scores (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        username TEXT NOT NULL,
+        score INTEGER NOT NULL,
+        difficulty TEXT NOT NULL,
+        modality TEXT NOT NULL,
+        last_updated TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id))''')
     db.commit()
     db.close()
 
-# ====================
-# Helpers JWT
-# ====================
-def create_access_token(user_id, username):
-    now = datetime.now(tz=timezone.utc)
-    payload = {
-        'sub': str(user_id),
-        'username': username,
-        'iat': int(now.timestamp()),
-        'exp': int((now + timedelta(minutes=JWT_EXPIRE_MINUTES)).timestamp())
-    }
-    return jwt.encode(payload, SECRET_KEY, algorithm=JWT_ALG)
-
+# Middleware de Proteção
 def jwt_required(fn):
     def wrapper(*args, **kwargs):
         auth = request.headers.get('Authorization', '')
         if not auth.startswith('Bearer '):
-            return jsonify({'message': 'Acesso negado: Token ausente'}), 401
-        
+            return jsonify({'message': 'Token ausente'}), 401
         token = auth.split(' ')[1]
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[JWT_ALG])
             request.jwt_payload = payload
             return fn(*args, **kwargs)
         except:
-            return jsonify({'message': 'Token inválido ou expirado'}), 401
+            return jsonify({'message': 'Token inválido'}), 401
     wrapper.__name__ = fn.__name__
     return wrapper
-
-# ====================
-# Rotas
-# ====================
 
 @app.route('/register', methods=['POST'])
 def register_user():
     data = request.get_json(force=True)
-    username = data.get('username', '').strip()
-    password = data.get('password', '').strip()
-
-    if not username or not password:
-        return jsonify({'message': 'Preencha todos os campos'}), 400
-
-    db = get_db()
-    c = db.cursor()
+    username, password = data.get('username', '').strip(), data.get('password', '').strip()
+    if not username or not password: return jsonify({'message': 'Erro nos dados'}), 400
+    db = get_db(); c = db.cursor()
     try:
         c.execute('INSERT INTO users (username, password_hash, created_at) VALUES (?,?,?)',
                   (username, generate_password_hash(password), datetime.now().isoformat()))
-        db.commit()
-        return jsonify({'message': 'Usuário criado!'}), 201
-    except sqlite3.IntegrityError:
-        return jsonify({'message': 'Este usuário já existe'}), 409
-    finally:
-        db.close()
+        db.commit(); return jsonify({'message': 'Criado!'}), 201
+    except: return jsonify({'message': 'Usuário já existe'}), 409
+    finally: db.close()
 
 @app.route('/login', methods=['POST'])
 def login_user():
     data = request.get_json(force=True)
-    db = get_db()
-    c = db.cursor()
+    db = get_db(); c = db.cursor()
     c.execute('SELECT id, username, password_hash FROM users WHERE username = ?', (data.get('username'),))
-    user = c.fetchone()
-    db.close()
-
+    user = c.fetchone(); db.close()
     if user and check_password_hash(user['password_hash'], data.get('password')):
-        token = create_access_token(user['id'], user['username'])
-        return jsonify({
-            'user_id': user['id'],
-            'username': user['username'],
-            'access_token': token
-        }), 200
-    return jsonify({'message': 'Usuário ou senha incorretos'}), 401
+        now = datetime.now(tz=timezone.utc)
+        token = jwt.encode({'sub': str(user['id']), 'username': user['username'], 'exp': int((now + timedelta(minutes=JWT_EXPIRE_MINUTES)).timestamp())}, SECRET_KEY, algorithm=JWT_ALG)
+        return jsonify({'access_token': token, 'username': user['username']}), 200
+    return jsonify({'message': 'Erro'}), 401
+
+# --- ROTA QUE ESTAVA FALTANDO ---
+@app.route('/me', methods=['GET'])
+@jwt_required
+def get_me():
+    p = request.jwt_payload
+    db = get_db(); c = db.cursor()
+    c.execute('SELECT MAX(score) as best FROM scores WHERE user_id = ?', (p['sub'],))
+    row = c.fetchone(); db.close()
+    return jsonify({
+        'username': p['username'],
+        'best_score': row['best'] if row['best'] else 0
+    }), 200
 
 @app.route('/leaderboard', methods=['GET'])
 def leaderboard():
-    db = get_db()
-    c = db.cursor()
-    # Pega os 10 melhores scores gerais
-    c.execute('''
-        SELECT username, MAX(score) as best_score 
-        FROM scores 
-        GROUP BY username 
-        ORDER BY best_score DESC 
-        LIMIT 10
-    ''')
-    rows = c.fetchall()
-    db.close()
-    return jsonify([{'username': r['username'], 'score': r['best_score']} for r in rows]), 200
+    db = get_db(); c = db.cursor()
+    c.execute('SELECT username, MAX(score) as best FROM scores GROUP BY username ORDER BY best DESC LIMIT 10')
+    rows = c.fetchall(); db.close()
+    return jsonify([{'username': r['username'], 'score': r['best']} for r in rows]), 200
 
-@app.route('/submit_score', methods=['POST']) # Rota ajustada para bater com o play-script.js
+@app.route('/submit_score', methods=['POST'])
 @jwt_required
 def save_score():
-    data = request.get_json(force=True)
-    p = request.jwt_payload
-    
-    db = get_db()
-    c = db.cursor()
-    try:
-        c.execute('''
-            INSERT INTO scores (user_id, username, score, difficulty, modality, last_updated)
-            VALUES (?,?,?,?,?,?)
-        ''', (p['sub'], p['username'], data['score'], data['difficulty'], data['modality'], datetime.now().isoformat()))
-        db.commit()
-        return jsonify({'message': 'Pontuação salva!'}), 201
-    except Exception as e:
-        return jsonify({'message': str(e)}), 500
-    finally:
-        db.close()
+    data, p = request.get_json(force=True), request.jwt_payload
+    db = get_db(); c = db.cursor()
+    c.execute('INSERT INTO scores (user_id, username, score, difficulty, modality, last_updated) VALUES (?,?,?,?,?,?)',
+              (p['sub'], p['username'], data['score'], data['difficulty'], data['modality'], datetime.now().isoformat()))
+    db.commit(); db.close()
+    return jsonify({'message': 'Salvo!'}), 201
 
-# ====================
-# Inicialização
-# ====================
 if __name__ == '__main__':
     init_db()
-    # Porta dinâmica para o Render/Railway
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
