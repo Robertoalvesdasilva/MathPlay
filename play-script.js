@@ -1,212 +1,134 @@
-const API_BASE_URL = 'https://mathplay-api.onrender.com';
+const API_BASE_URL = "https://mathplay-api.onrender.com";
 
-// Variáveis de Estado do Jogo
-let currentUserId = null, currentUsername = null, token = null;
-let currentDifficulty = 'easy', currentModality = 'arithmetic';
-let score = 0, currentQuestion = { text: '', answer: null };
-let questionIndex = 0; 
-const TOTAL_QUESTIONS = 10;
-let lives = 3; 
-let totalTimeSec = 180; // 3 minutos de jogo
-let totalTimerId = null;
+// --- VARIÁVEIS DO JOGO ---
+let score = 0;
+let lives = 3;
+let currentQuestion = 1;
+const totalQuestions = 10;
+let timeLeft = 180; // 3 minutos
+let correctAnswer = 0;
+let timerInterval;
 
-// --- Funções de Auxílio ---
+// Dados recuperados do Dashboard
+const difficulty = localStorage.getItem('game_difficulty') || 'easy';
+const modality = localStorage.getItem('game_modality') || 'arithmetic';
+const username = localStorage.getItem('username') || 'Jogador';
 
-function getQueryParams() {
-    const p = {};
-    const s = window.location.search.substring(1);
-    if (!s) return p;
-    s.split('&').forEach(x => {
-        const [k, v] = x.split('=');
-        p[k] = decodeURIComponent(v || '');
-    });
-    return p;
-}
+// --- INICIALIZAÇÃO ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Preenche o HUD (cabeçalho do jogo)
+    document.getElementById('player-name').innerText = `👤 ${username}`;
+    document.getElementById('game-difficulty').innerText = `🎯 ${difficulty.toUpperCase()}`;
+    document.getElementById('game-modality').innerText = `🧩 ${modality.toUpperCase()}`;
+    
+    startTimer();
+    generateQuestion();
 
-// Atualiza o HUD com ícones e cores
-function updateLivesDisplay() {
-    const livesSpan = document.getElementById('game-lives');
-    // Adiciona o coração com a classe de cor vermelha definida no CSS
-    livesSpan.innerHTML = `Vidas: <span class="heart-red">${"❤".repeat(lives)}</span>`;
-}
-
-// --- Lógica de Geração de Questões ---
-
-function generateArithmeticQuestion(difficulty) {
-    let a, b, operator;
-    const operators = ['+', '-', '*'];
-    operator = operators[Math.floor(Math.random() * operators.length)];
-
-    if (difficulty === 'easy') {
-        a = Math.floor(Math.random() * 10) + 1;
-        b = Math.floor(Math.random() * 10) + 1;
-    } else if (difficulty === 'medium') {
-        a = Math.floor(Math.random() * 50) + 1;
-        b = Math.floor(Math.random() * 50) + 1;
-    } else {
-        a = Math.floor(Math.random() * 100) + 10;
-        b = Math.floor(Math.random() * 100) + 10;
-    }
-
-    const questionText = `${a} ${operator} ${b}`;
-    const correctAnswer = eval(questionText); 
-    return { text: questionText + " = ?", answer: correctAnswer };
-}
-
-function generateAlgebraQuestion() {
-    let x = Math.floor(Math.random() * 10) + 1; 
-    let a = Math.floor(Math.random() * 5) + 2;
-    let b = Math.floor(Math.random() * 10) + 1;
-    let c = a * x + b;
-
-    return { 
-        text: `Encontre X: ${a}x + ${b} = ${c}`, 
-        answer: x 
+    // Evento do botão enviar
+    document.getElementById('submit-answer-button').onclick = checkAnswer;
+    
+    // Enviar com a tecla "Enter"
+    document.getElementById('answer-input').onkeyup = (e) => {
+        if (e.key === 'Enter') checkAnswer();
     };
+
+    // Botões de navegação
+    document.getElementById('btn-back').onclick = () => window.location.href = 'game.html';
+    document.getElementById('btn-logout').onclick = () => {
+        localStorage.clear();
+        window.location.href = 'index.html';
+    };
+});
+
+// --- LÓGICA DO CRONÔMETRO ---
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        document.getElementById('game-timer').innerText = `⏱️ ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) endGame("O tempo acabou! ⏰");
+    }, 1000);
 }
 
-function newQuestion() {
-    if (questionIndex >= TOTAL_QUESTIONS || lives <= 0) {
-        endGame();
-        return;
-    }
-
+// --- GERADOR DE QUESTÕES ---
+function generateQuestion() {
+    let n1, n2;
     const input = document.getElementById('answer-input');
-    if (input) {
-        input.value = '';
-        input.focus();
-    }
-    
-    document.getElementById('feedback').innerText = '';
+    input.value = '';
+    input.focus();
 
-    if (currentModality === 'arithmetic') {
-        currentQuestion = generateArithmeticQuestion(currentDifficulty);
+    document.getElementById('game-progress').innerText = `📝 Questão: ${currentQuestion}/${totalQuestions}`;
+
+    if (modality === 'arithmetic') {
+        // Lógica de Aritmética
+        n1 = Math.floor(Math.random() * (difficulty === 'hard' ? 100 : 20));
+        n2 = Math.floor(Math.random() * (difficulty === 'hard' ? 50 : 20));
+        const op = Math.random() > 0.5 ? '+' : '-';
+        correctAnswer = op === '+' ? n1 + n2 : n1 - n2;
+        document.getElementById('question').innerText = `${n1} ${op} ${n2} = ?`;
     } else {
-        currentQuestion = generateAlgebraQuestion();
+        // Lógica de Álgebra (Ex: 2x = 10)
+        let x = Math.floor(Math.random() * 10) + 1;
+        let factor = Math.floor(Math.random() * 5) + 2;
+        let result = x * factor;
+        correctAnswer = x;
+        document.getElementById('question').innerText = `${factor}x = ${result}`;
     }
-
-    document.getElementById('question').innerText = currentQuestion.text;
-    questionIndex++;
-    
-    // Atualiza o marcador de progresso colorido
-    document.getElementById('game-progress').innerText = `📝 Questão: ${questionIndex}/${TOTAL_QUESTIONS}`;
 }
 
-// --- Lógica do Jogo ---
-
+// --- VERIFICAR RESPOSTA ---
 function checkAnswer() {
-    const inputField = document.getElementById('answer-input');
-    const userAnswer = parseInt(inputField.value);
-    const feedback = document.getElementById('feedback');
-
-    if (isNaN(userAnswer)) return; 
-
-    if (userAnswer === currentQuestion.answer) {
-        score += (currentDifficulty === 'hard' ? 30 : currentDifficulty === 'medium' ? 20 : 10);
-        feedback.innerText = "CORRETO! 🌟";
-        feedback.style.color = "#00ce8c"; // Verde sucesso
+    const userAnswer = parseInt(document.getElementById('answer-input').value);
+    
+    if (userAnswer === correctAnswer) {
+        score += (difficulty === 'hard' ? 15 : 10);
+        document.getElementById('game-score').innerText = `⭐ Pontos: ${score}`;
     } else {
         lives--;
-        feedback.innerText = `ERROU! Resposta: ${currentQuestion.answer}`;
-        feedback.style.color = "#ff4757"; // Vermelho erro
-        updateLivesDisplay();
+        updateLivesUI();
+        if (lives <= 0) return endGame("Suas vidas acabaram! 🔥");
     }
 
-    document.getElementById('game-score').innerText = `⭐ Pontos: ${score}`;
-    
-    if (lives <= 0) {
-        setTimeout(() => endGame(), 1000);
+    if (currentQuestion >= totalQuestions) {
+        endGame("Parabéns! Você concluiu o desafio! 🏆");
     } else {
-        setTimeout(() => newQuestion(), 1200);
+        currentQuestion++;
+        generateQuestion();
     }
 }
 
-async function endGame() {
-    clearInterval(totalTimerId);
-    const token = localStorage.getItem('mathplay_token');
-    
-    const payload = {
-        score: score,
-        difficulty: currentDifficulty,
-        modality: currentModality
-    };
+// --- ATUALIZAR CORAÇÕES ---
+function updateLivesUI() {
+    const hearts = "❤".repeat(lives);
+    document.getElementById('game-lives').innerHTML = ` Vidas: <span class="heart-red">${hearts}</span>`;
+}
 
+// --- FINALIZAR JOGO E SALVAR NO RENDER ---
+async function endGame(message) {
+    clearInterval(timerInterval);
+    alert(`${message}\nPontuação Final: ${score}`);
+
+    const token = localStorage.getItem('access_token');
+    
+    // Salva a pontuação no banco de dados do Render
     try {
         await fetch(`${API_BASE_URL}/submit_score`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` 
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                score: score,
+                difficulty: difficulty,
+                modality: modality
+            })
         });
-        alert(`Fim de Jogo! Pontuação: ${score}`);
     } catch (err) {
-        console.error("Erro ao salvar:", err);
+        console.error("Erro ao salvar score:", err);
     }
-    
+
     window.location.href = 'game.html';
 }
-
-// --- Inicialização e Botões de Navegação ---
-
-document.addEventListener('DOMContentLoaded', () => {
-    currentUsername = localStorage.getItem('mathplay_username') || 'Fulano';
-    token = localStorage.getItem('mathplay_token');
-
-    if (!token) {
-        window.location.href = 'index.html';
-        return;
-    }
-
-    const params = getQueryParams();
-    currentDifficulty = params.difficulty || 'easy';
-    currentModality = params.modality || 'arithmetic';
-
-    // Preenche os marcadores coloridos com os textos personalizados
-    document.getElementById('player-name').innerText = `👤 Jogador: ${currentUsername}`;
-    document.getElementById('game-difficulty').innerText = `🎯 Dificuldade: ${currentDifficulty.toUpperCase()}`;
-    document.getElementById('game-modality').innerText = `🧩 Modalidade: ${currentModality.toUpperCase()}`;
-    document.getElementById('game-score').innerText = `⭐ Pontuação: 0`;
-    
-    updateLivesDisplay();
-
-    // Eventos
-    document.getElementById('submit-answer-button').onclick = checkAnswer;
-
-    // Botão Voltar (Menu)
-    const btnBack = document.getElementById('btn-back');
-    if (btnBack) {
-        btnBack.onclick = () => {
-            if(confirm("Voltar para a seleção? Seu progresso atual será perdido.")) {
-                window.location.href = 'game.html';
-            }
-        };
-    }
-
-    // Botão Sair (Logout)
-    const btnLogout = document.getElementById('btn-logout');
-    if (btnLogout) {
-        btnLogout.onclick = () => {
-            if(confirm("Deseja encerrar sua sessão e sair?")) {
-                localStorage.clear();
-                window.location.href = 'index.html';
-            }
-        };
-    }
-
-    // Timer Global
-    totalTimerId = setInterval(() => {
-        totalTimeSec--;
-        const mins = Math.floor(totalTimeSec / 60);
-        const secs = totalTimeSec % 60;
-        const timerDisplay = document.getElementById('game-timer');
-        if (timerDisplay) {
-            timerDisplay.innerText = `⏱️ Tempo: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-        
-        if (totalTimeSec <= 0) endGame();
-    }, 1000);
-
-    newQuestion();
-});
