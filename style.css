@@ -176,6 +176,30 @@ select {
     text-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
 }
 
+.btn-ghost {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+/* Efeito especial para o botão de sair */
+#btn-logout:hover {
+    background: rgba(255, 71, 87, 0.2); /* Vermelho bem suave */
+    border-color: #ff4757;
+    color: #ff4757;
+}
+
+#btn-back:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: white;
+}
+
+
 
 /* --- AJUSTES PARA CELULAR --- */
 @media (max-width: 600px) {
