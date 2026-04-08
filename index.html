@@ -3,40 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matematika+ (bom 👍)</title>
+    <title>MathPlay - Bem-vindo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="auth-wrapper">
-        <div class="brand">
-            <h1 class="logo">Matematika+</h1>
-            <p class="tagline">(bom 👍)</p>
-        </div>
+    <img src="imagens/tela de fundo game.jpg" alt="Fundo" class="bg-tela">
 
+    <div class="auth-container">
         <div class="auth-card">
-            <div id="login-form">
-                <h2>Bem-vindo de volta!</h2>
-                <div class="input-group">
-                    <input type="text" id="login-username" placeholder="Usuário" required>
-                    <input type="password" id="login-password" placeholder="Senha" required>
-                </div>
-                <button id="login-button" class="main-btn">ENTRAR</button>
-                <p class="switch-text">Novo por aqui? <a href="#" id="show-register">Criar conta</a></p>
+            <div class="auth-tabs">
+                <button id="tab-login" class="tab-btn active" onclick="showAuth('login')">Login</button>
+                <button id="tab-signup" class="tab-btn" onclick="showAuth('signup')">Cadastro</button>
             </div>
 
-            <div id="register-form" class="hidden">
-                <h2>Criar nova conta</h2>
+            <div id="form-login">
+                <h2>Entrar</h2>
                 <div class="input-group">
-                    <input type="text" id="register-username" placeholder="Escolha um usuário" required>
-                    <input type="password" id="register-password" placeholder="Crie uma senha" required>
-                    <input type="password" id="register-confirm" placeholder="Confirme a senha" required>
+                    <label>Usuário</label>
+                    <input type="text" id="login-user" placeholder="Seu usuário">
                 </div>
-                <button id="register-button" class="main-btn">CADASTRAR</button>
-                <p class="switch-text">Já tem conta? <a href="#" id="show-login">Fazer Login</a></p>
+                <div class="input-group">
+                    <label>Senha</label>
+                    <input type="password" id="login-pass" placeholder="Sua senha">
+                </div>
+                <button id="btn-entrar" class="main-btn">ENTRAR</button>
+            </div>
+
+            <div id="form-signup" class="hidden">
+                <h2>Criar Conta</h2>
+                <div class="input-group">
+                    <label>Escolha um Usuário</label>
+                    <input type="text" id="reg-user" placeholder="Ex: Roberto123">
+                </div>
+                <div class="input-group">
+                    <label>Crie uma Senha</label>
+                    <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres">
+                </div>
+                <button id="btn-cadastrar" class="main-btn">CADASTRAR</button>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        function showAuth(type) {
+            document.getElementById('form-login').classList.toggle('hidden', type !== 'login');
+            document.getElementById('form-signup').classList.toggle('hidden', type !== 'signup');
+            document.getElementById('tab-login').classList.toggle('active', type === 'login');
+            document.getElementById('tab-signup').classList.toggle('active', type === 'signup');
+        }
+    </script>
+    <script src="auth-script.js"></script>
 </body>
 </html>
