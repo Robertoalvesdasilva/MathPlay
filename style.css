@@ -1,88 +1,192 @@
+/* --- 1. VARIÁVEIS E BASE --- */
 :root {
     --primary: #6c5ce7;
     --primary-dark: #5b4cc4;
     --success: #00ce8c;
-    --danger: #ff4757;
-    --white: #ffffff;
     --bg-light: #f0f2f5;
+    --text-color: #2d3436;
+    --white: #ffffff;
+    --danger: #ff4757;
 }
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: var(--bg-light);
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-light);
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: flex-start; 
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
+/* Imagem de Fundo */
 .bg-tela {
     position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    object-fit: cover; z-index: -1; opacity: 0.3;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 0.3;
+    pointer-events: none;
 }
 
-/* --- AUTH TABS --- */
-.auth-container { width: 100%; max-width: 400px; padding: 20px; margin-top: 10vh; }
-.auth-card { background: var(--white); padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
-.auth-tabs { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 5px; border-radius: 12px; }
-.tab-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: bold; border-radius: 8px; }
-.tab-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+/* --- 2. AUTH / LOGIN --- */
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    margin-top: 10vh;
+}
 
-/* --- DASHBOARD GRID --- */
-.dashboard-wrapper { width: 100%; max-width: 1100px; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+.auth-card {
+    background: var(--white);
+    padding: 40px 30px;
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+/* --- 3. DASHBOARD E GRID (LADO A LADO NO PC) --- */
+.dashboard-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.user-header {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* O "Pulo do Gato": Flexbox para os cards principais */
 .selection-grid {
     display: flex;
-    flex-direction: row; /* Lado a lado no PC */
-    gap: 20px;
+    flex-direction: row; /* Lado a lado */
     justify-content: center;
-    align-items: stretch;
+    align-items: stretch; /* Mesma altura */
+    gap: 30px;
+    margin-top: 20px;
 }
 
 .selection-card, .leaderboard-full-card {
     background: rgba(255, 255, 255, 0.95);
     padding: 25px;
-    border-radius: 20px;
-    flex: 1;
-    min-width: 320px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    flex: 1; /* Divide o espaço */
+    min-width: 350px;
 }
 
-/* --- CENTRALIZAR BOTÃO SAIR --- */
-.footer-area {
+/* --- 4. RANKING (COLUNAS INTERNAS) --- */
+.leaderboard-columns {
     display: flex;
-    justify-content: center; /* Centraliza o botão */
-    width: 100%;
+    gap: 20px;
     margin-top: 20px;
-    padding-bottom: 40px;
 }
 
-.btn-logout {
-    background: transparent;
-    color: var(--danger);
-    border: 2px solid var(--danger);
-    padding: 12px 50px;
+.rank-col {
+    flex: 1;
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 15px;
+    min-width: 200px;
+}
+
+.rank-col h3 {
+    text-align: center;
+    color: var(--primary);
+    border-bottom: 2px solid var(--bg-light);
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+}
+
+.leaderboard-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 5px;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 0.95rem;
+}
+
+.leaderboard-list li b { color: var(--success); }
+
+/* --- 5. COMPONENTES (BOTÕES/INPUTS) --- */
+.score-badge {
+    background: white;
+    padding: 15px 30px;
+    border-radius: 15px;
+    border: 2px solid var(--primary);
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.input-group { margin-bottom: 15px; text-align: left; }
+.input-group label { display: block; font-weight: 600; margin-bottom: 5px; }
+
+input, select {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+.main-btn, .btn-send {
+    width: 100%;
+    padding: 16px;
+    background: var(--primary);
+    color: white;
+    border: none;
     border-radius: 12px;
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
 }
-.btn-logout:hover { background: var(--danger); color: white; }
 
-/* --- RANKING COLUNAS --- */
-.leaderboard-columns { display: flex; gap: 15px; margin-top: 15px; }
-.rank-col { flex: 1; background: #f8fafc; padding: 15px; border-radius: 12px; min-width: 140px; }
-.leaderboard-list { list-style: none; padding: 0; margin: 0; }
-.leaderboard-list li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+.main-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
-/* --- RESPONSIVIDADE --- */
-@media (max-width: 850px) {
-    .selection-grid { flex-direction: column; align-items: center; }
-    .selection-card, .leaderboard-full-card { width: 100%; }
-    .leaderboard-columns { flex-direction: column; }
+.btn-logout {
+    background: transparent;
+    color: var(--danger);
+    border: 2px solid var(--danger);
+    padding: 12px 40px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.hidden { display: none; }
-.main-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-input, select { width: 100%; padding: 12px; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+.btn-logout:hover { background: var(--danger); color: white; }
+
+/* HUD do Jogo */
+#game-lives { color: var(--danger); font-weight: bold; }
+
+/* --- 6. RESPONSIVIDADE (CELULAR) --- */
+@media (max-width: 900px) {
+    .selection-grid {
+        flex-direction: column; /* Empilha no celular */
+        align-items: center;
+    }
+
+    .selection-card, .leaderboard-full-card {
+        width: 100%;
+        min-width: unset;
+        max-width: 500px;
+    }
+
+    .leaderboard-columns {
+        flex-direction: column; /* Colunas do ranking também empilham */
+    }
+}
