@@ -1,154 +1,235 @@
-/* --- VARIÁVEIS E BASE --- */
 :root {
     --primary: #6c5ce7;
-    --primary-dark: #5b4cc4;
     --success: #00ce8c;
-    --bg-light: #f0f2f5;
-    --text-color: #2d3436;
-    --white: #ffffff;
+    --bg: #f0f2f5;
 }
 
 body {
     margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--bg-light);
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg);
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-}
-
-/* --- IMAGEM DE FUNDO --- */
-.bg-image {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-    opacity: 0.3; /* Ajuste para não atrapalhar a leitura */
-}
-
-/* --- CONTAINER DOS CARDS --- */
-.auth-container {
-    width: 100%;
-    max-width: 400px; /* Largura ideal para formulários */
-    padding: 20px;
-    box-sizing: border-box;
+    height: 100vh;
 }
 
 .auth-card {
-    background: var(--white);
-    padding: 40px 30px;
-    border-radius: 24px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    text-align: center;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    width: 320px;
 }
 
-/* --- LOGO E TEXTOS --- */
-.logo-title {
+/* --- CORREÇÃO DO TÍTULO --- */
+.logo {
     font-size: 2.5rem;
-    color: var(--primary);
-    margin: 0 0 10px 0;
-    font-weight: 800;
+    font-weight: 900;
+    margin: 0;
+    text-align: center;
+    
+    /* Gradiente */
+    background: linear-gradient(45deg, var(--primary), var(--success));
+    
+    /* O segredo para funcionar em todos os navegadores */
+    -webkit-background-clip: text;
+    background-clip: text; 
+    -webkit-text-fill-color: transparent;
+    
+    /* Caso o navegador seja muito antigo, ele usa essa cor: */
+    color: var(--primary); 
 }
 
 .tagline {
-    color: #636e72;
-    font-size: 0.95rem;
-    margin-bottom: 30px;
+    text-align: center;
+    margin-top: 5px;
+    color: #888;
+    font-weight: bold;
 }
 
-/* --- FORMULÁRIOS --- */
-.input-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-.input-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 5px;
-    font-size: 0.9rem;
-    color: var(--text-color);
-}
-
+/* --- INPUTS E BOTÕES --- */
 input {
     width: 100%;
-    padding: 14px;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 1rem;
-    box-sizing: border-box; /* Crucial para não estourar a largura */
-    transition: border-color 0.3s ease;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
 }
 
-input:focus {
-    outline: none;
-    border-color: var(--primary);
-}
-
-/* --- BOTÕES --- */
 .main-btn {
     width: 100%;
-    padding: 16px;
-    background-color: var(--primary);
+    padding: 12px;
+    background: var(--primary);
     color: white;
     border: none;
-    border-radius: 12px;
-    font-size: 1.1rem;
+    border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s, background 0.3s;
+}
+
+.hidden { display: none; }
+
+.switch-text {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 15px;
+}
+
+/* Container do Dashboard */
+.dashboard-wrapper {
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.user-header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--text-main); /* Mudamos para uma cor escura ou sólido */
+}
+
+.user-header h1 {
+    font-size: 2.2rem;
+    color: var(--primary-color); /* Usa o roxo principal */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1); /* Sombra leve para leitura */
+    margin-bottom: 5px;
+}
+
+.score-badge {
+    background: white; /* Fundo branco sólido para contraste total */
+    display: inline-flex;
+    flex-direction: column;
+    padding: 12px 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.2); /* Sombra colorida */
+    border: 2px solid var(--primary-color); /* Borda para definir o limite */
     margin-top: 10px;
 }
 
-.main-btn:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-2px);
+.score-badge #display-best-score {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary-color); /* O número fica em destaque */
+    line-height: 1;
 }
 
-.main-btn:active {
-    transform: translateY(0);
+/* Grid Responsivo: Lado a Lado no PC, Empilhado no Celular */
+.selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
 }
 
-/* --- SWITCH (Trocar entre Login/Cadastro) --- */
-.switch-text {
-    margin-top: 20px;
-    font-size: 0.9rem;
-    color: #636e72;
+.selection-card, .leaderboard-card {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    color: var(--text);
 }
 
-.switch-link {
-    color: var(--primary);
-    font-weight: bold;
-    text-decoration: none;
+/* Estilização dos Selects (Mais bonitos no celular) */
+select {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 2px solid #eee;
+    background: #f9f9f9;
+    font-size: 1rem;
     cursor: pointer;
+    appearance: none; /* Remove a setinha padrão chata */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 15px;
 }
 
-.switch-link:hover {
-    text-decoration: underline;
+/* Lista de Ranking */
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
 }
 
-/* --- CLASSES DE UTILIDADE --- */
-.hidden {
-    display: none;
+.leaderboard-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 600;
 }
 
-/* --- RESPONSIVIDADE PARA CELULAR --- */
-@media (max-width: 480px) {
-    .auth-container {
-        padding: 15px;
+.leaderboard-list li:nth-child(1) { color: #f1c40f; font-size: 1.2rem; } /* Ouro */
+
+#motivation-phrase {
+    font-style: italic;
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    /* Um leve brilho para chamar atenção */
+    text-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
+}
+
+
+/* --- AJUSTES PARA CELULAR --- */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+        align-items: flex-start; /* Começa do topo no celular */
+        padding-top: 30px;
+    }
+
+    .selection-grid {
+        grid-template-columns: 1fr; /* Força uma coluna só */
     }
     
-    .auth-card {
-        padding: 30px 20px;
-        border-radius: 20px;
+    .user-header h1 {
+        font-size: 1.8rem;
     }
-    
-    .logo-title {
-        font-size: 2rem;
+
+    .auth-card, .game-container {
+        width: 95%; /* Ocupa quase a tela toda */
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .logo {
+        font-size: 2rem; /* Título menor para caber */
+    }
+
+    /* Aumenta os inputs e botões para o dedo acertar fácil */
+    input, .main-btn {
+        padding: 16px !important;
+        font-size: 1.1rem !important;
+    }
+
+    /* Se você tiver o HUD (pontos/tempo) no topo */
+    .game-header {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .question {
+        font-size: 3rem !important; /* Conta matemática grande, mas nem tanto */
+    }
+
+    /* Botões de voltar/sair no rodapé ficam um ao lado do outro */
+    .navigation-footer {
+        width: 90%;
+        bottom: 10px;
+        gap: 10px;
+    }
+
+    .btn-small {
+        flex: 1; /* Faz os dois botões terem o mesmo tamanho */
+        text-align: center;
     }
 }
