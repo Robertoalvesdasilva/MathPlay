@@ -375,3 +375,24 @@ input, select {
 .leaderboard-list li b {
     color: var(--success); /* Aquele verde que você definiu */
 }
+
+.leaderboard-columns {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+.rank-col {
+    flex: 1;
+    min-width: 200px;
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 15px;
+}
+.leaderboard-list { list-style: none; padding: 0; }
+.leaderboard-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+}
