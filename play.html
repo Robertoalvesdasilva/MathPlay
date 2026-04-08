@@ -2,59 +2,135 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>MathPlay - Jogo</title>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    .game-container{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;padding:40px;border-radius:12px;box-shadow:0 8px 16px rgba(0,0,0,.15);max-width:720px;width:92%;margin:24px auto}
-    #game-info{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;width:100%;margin-bottom:14px;font-weight:600;color:#555}
-    .stat{padding:6px 10px;border-radius:8px;background:#f1f5f9}
-    #question{font-size:2.5em;margin:12px 0;color:#007bff;font-weight:800;text-align:center}
-    #answer-input{padding:14px;font-size:1.4em;width:100%;max-width:320px;border:2px solid #a0d9e9;border-radius:8px;margin:8px 0;text-align:center}
-    #feedback{margin-top:10px;font-size:1.2em;font-weight:700}
-    .correct{color:#28a745}.incorrect{color:#dc3545}
-    .game-buttons{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
-    .lives{letter-spacing:4px;font-size:1.2em}
-    .timer{font-variant-numeric:tabular-nums}
-    progress{width:100%;height:12px}
+    /* Estilos específicos da área de jogo */
+    .game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        max-width: 700px;
+        width: 90%;
+        margin: 20px auto;
+        text-align: center;
+    }
+
+    /* Grid dos Marcadores Coloridos */
+    #game-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .stat {
+        padding: 8px;
+        border-radius: 10px;
+        background: #f8fafc;
+        font-weight: 700;
+        font-size: 0.9rem;
+        border: 1px solid #e2e8f0;
+    }
+
+    /* Cores dos Marcadores */
+    .user { color: #54a0ff; border-left: 4px solid #54a0ff; }
+    .difficulty { color: #feca57; border-left: 4px solid #feca57; }
+    .modality { color: #ff9f43; border-left: 4px solid #ff9f43; }
+    .score { color: #1dd1a1; border-left: 4px solid #1dd1a1; }
+    .timer { color: #ee5253; border-left: 4px solid #ee5253; font-variant-numeric: tabular-nums; }
+    .progress { color: #5f27cd; border-left: 4px solid #5f27cd; }
+    
+    /* Vidas e Coração */
+    .lives { 
+        color: #ff4757; 
+        border-left: 4px solid #ff4757;
+        font-size: 1.1rem;
+    }
+    .heart-red { color: #ff4757; text-shadow: 0 0 5px rgba(255, 71, 87, 0.4); }
+
+    #question {
+        font-size: 3rem;
+        margin: 20px 0;
+        color: var(--primary);
+        font-weight: 900;
+    }
+
+    #answer-input {
+        padding: 15px;
+        font-size: 1.5rem;
+        width: 100%;
+        max-width: 250px;
+        border: 3px solid #cbd5e1;
+        border-radius: 15px;
+        text-align: center;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    #answer-input:focus { border-color: var(--primary); }
+
+    .btn-send {
+        background: linear-gradient(135deg, #00ce8c 0%, #00a36f 100%);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 12px;
+        font-weight: bold;
+        font-size: 1.2rem;
+        cursor: pointer;
+        margin-top: 20px;
+        width: 100%;
+        box-shadow: 0 4px 15px rgba(0, 206, 140, 0.3);
+    }
+
+    /* Rodapé com botões nas extremidades */
+    .game-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 15px 25px;
+        display: flex;
+        justify-content: space-between;
+        box-sizing: border-box;
+    }
+
+    .btn-secondary { background: #64748b; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
+    .btn-danger { background: #ff4757; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
+
   </style>
 </head>
 <body>
+  <img src="imagens/tela de fundo game.jpg" alt="Fundo" class="bg-tela">
+
   <div class="game-container">
-    <h1>MathPlay - O Jogo!</h1>
     <div id="game-info">
-      <span class="stat" id="player-name">Jogador: -</span>
-      <span class="stat" id="game-difficulty">Dificuldade: -</span>
-      <span class="stat" id="game-modality">Modalidade: -</span>
-      <span class="stat" id="game-score">Pontuação: 0</span>
-      <span class="stat timer" id="game-timer">Tempo: 03:00</span>
-      <span class="stat lives" id="game-lives">Vidas: ❤❤❤</span>
-      <span class="stat" id="game-progress">Questão: 1/10</span>
+      <span class="stat user" id="player-name">👤 Carregando...</span>
+      <span class="stat difficulty" id="game-difficulty">🎯 -</span>
+      <span class="stat modality" id="game-modality">🧩 -</span>
+      <span class="stat score" id="game-score">⭐ Pontos: 0</span>
+      <span class="stat timer" id="game-timer">⏱️ 03:00</span>
+      <span class="stat lives" id="game-lives"> Vidas: <span class="heart-red">❤❤❤</span></span>
+      <span class="stat progress" id="game-progress">📝 Questão: 1/10</span>
     </div>
 
-    <progress id="round-progress" max="100" value="100"></progress>
-
-    <p id="question">Carregando pergunta...</p>
-    <input type="number" id="answer-input" placeholder="Sua resposta"/>
-    <button id="submit-answer-button">Enviar Resposta</button>
+    <p id="question">Preparar...</p>
+    <input type="number" id="answer-input" placeholder="?" autocomplete="off"/>
+    <button id="submit-answer-button" class="btn-send">ENVIAR RESPOSTA</button>
     <div id="feedback"></div>
-
-    <div class="game-buttons">
-      <button id="next-question-button" style="display:none;">Próxima Pergunta</button>
-      <button id="end-game-button" style="display:none;">Finalizar Jogo</button>
-      <button id="back-to-selection-button">Voltar à Seleção</button>
-      <button id="game-logout-button">Sair</button>
-    </div>
   </div>
 
-  <!-- Estrutura do Modal de Mensagens (Certifique-se de que está presente!) -->
-  <div id="message-modal-overlay" class="modal-overlay hidden">
-    <div class="modal-content">
-      <h3 id="modal-title"></h3>
-      <p id="modal-message"></p>
-      <button id="modal-close-button">OK</button>
-    </div>
-  </div>
+  <footer class="game-footer">
+      <button id="btn-back" class="btn-secondary">⬅️ Menu</button>
+      <button id="btn-logout" class="btn-danger">Sair 🚪</button>
+  </footer>
 
   <script src="play-script.js"></script>
 </body>

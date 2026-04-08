@@ -172,3 +172,96 @@ input, select {
     .selection-grid { grid-template-columns: 1fr; }
     .btn-logout { width: 100%; }
 }
+/* Container dos botões no rodapé */
+.game-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 25px; /* Espaço nas bordas */
+    display: flex;
+    justify-content: space-between; /* Um para cada lado */
+    align-items: center;
+    box-sizing: border-box;
+    z-index: 10;
+}
+
+/* Estilo comum para os botões do rodapé */
+.btn-secondary, .btn-danger {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: 0.3s;
+    font-size: 0.9rem;
+}
+
+/* Botão Voltar (Esquerda) */
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-secondary:hover {
+    background: white;
+    color: var(--primary);
+}
+
+/* Botão Sair (Direita) */
+.btn-danger {
+    background: rgba(255, 71, 87, 0.2);
+    color: #ff4757;
+    border-color: #ff4757;
+}
+
+.btn-danger:hover {
+    background: #ff4757;
+    color: white;
+}
+
+/* Ajuste para celular: botões um pouco menores para não apertar */
+@media (max-width: 400px) {
+    .game-footer {
+        padding: 10px 15px;
+    }
+    .btn-secondary, .btn-danger {
+        padding: 8px 15px;
+    }
+}
+
+/* Estilo para as Vidas (Coração Vermelho) */
+#game-lives {
+    color: #ff4757; /* Vermelho vivo */
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 71, 87, 0.3);
+}
+
+/* Cores para os marcadores do HUD */
+.hud-item.user { color: #54a0ff; }       /* Azul */
+.hud-item.difficulty { color: #feca57; } /* Amarelo/Laranja */
+.hud-item.modality { color: #ff9f43; }   /* Laranja Escuro */
+.hud-item.score { color: #1dd1a1; }      /* Verde Esmeralda */
+.hud-item.timer { color: #ee5253; }      /* Vermelho */
+.hud-item.progress { color: #5f27cd; }   /* Roxo */
+
+/* Botão Enviar Resposta (Destaque) */
+.btn-send {
+    background: linear-gradient(135deg, #00ce8c 0%, #00a36f 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 206, 140, 0.3);
+    transition: 0.3s;
+    width: 100%;
+}
+
+.btn-send:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(0, 206, 140, 0.4);
+}
