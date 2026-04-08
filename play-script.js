@@ -1,134 +1,186 @@
-const API_BASE_URL = "https://mathplay-api.onrender.com";
+const API_BASE_URL = 'https://mathplay-api.onrender.com';
 
-// --- VARIÁVEIS DO JOGO ---
-let score = 0;
-let lives = 3;
-let currentQuestion = 1;
-const totalQuestions = 10;
-let timeLeft = 180; // 3 minutos
-let correctAnswer = 0;
-let timerInterval;
-
-// Dados recuperados do Dashboard
-const difficulty = localStorage.getItem('game_difficulty') || 'easy';
-const modality = localStorage.getItem('game_modality') || 'arithmetic';
-const username = localStorage.getItem('username') || 'Jogador';
+// --- VARIÁVEIS DE ESTADO DO JOGO ---
+let currentUsername = null, token = null;
+let currentDifficulty = 'easy', currentModality = 'arithmetic';
+let score = 0, currentQuestion = { text: '', answer: null };
+let questionIndex = 0; 
+const TOTAL_QUESTIONS = 10;
+let lives = 3; 
+let totalTimeSec = 180; // 3 minutos
+let totalTimerId = null;
 
 // --- INICIALIZAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Preenche o HUD (cabeçalho do jogo)
-    document.getElementById('player-name').innerText = `👤 ${username}`;
-    document.getElementById('game-difficulty').innerText = `🎯 ${difficulty.toUpperCase()}`;
-    document.getElementById('game-modality').innerText = `🧩 ${modality.toUpperCase()}`;
-    
-    startTimer();
-    generateQuestion();
+    // 1. Pega os dados que o LOGIN e o DASHBOARD salvaram
+    token = localStorage.getItem('access_token');
+    currentUsername = localStorage.getItem('username') || 'Jogador';
+    currentDifficulty = localStorage.getItem('game_difficulty') || 'easy';
+    currentModality = localStorage.getItem('game_modality') || 'arithmetic';
 
-    // Evento do botão enviar
-    document.getElementById('submit-answer-button').onclick = checkAnswer;
+    // 2. Verifica se o usuário está logado
+    if (!token) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // 3. Preenche o visual do jogo (HUD)
+    document.getElementById('player-name').innerText = `👤 Jogador: ${currentUsername}`;
+    document.getElementById('game-difficulty').innerText = `🎯 Dificuldade: ${currentDifficulty.toUpperCase()}`;
+    document.getElementById('game-modality').innerText = `🧩 Modalidade: ${currentModality.toUpperCase()}`;
+    document.getElementById('game-score').innerText = `⭐ Pontuação: 0`;
     
-    // Enviar com a tecla "Enter"
+    updateLivesDisplay();
+    setupControls();
+    startTimer();
+    newQuestion();
+});
+
+// --- FUNÇÕES DE SUPORTE ---
+
+function setupControls() {
+    // Botão enviar
+    document.getElementById('submit-answer-button').onclick = checkAnswer;
+
+    // Atalho: Tecla Enter para enviar
     document.getElementById('answer-input').onkeyup = (e) => {
         if (e.key === 'Enter') checkAnswer();
     };
 
-    // Botões de navegação
-    document.getElementById('btn-back').onclick = () => window.location.href = 'game.html';
-    document.getElementById('btn-logout').onclick = () => {
-        localStorage.clear();
-        window.location.href = 'index.html';
-    };
-});
+    // Botão Voltar
+    const btnBack = document.getElementById('btn-back');
+    if (btnBack) {
+        btnBack.onclick = () => {
+            if(confirm("Voltar para o menu? Seu progresso será perdido.")) {
+                window.location.href = 'game.html';
+            }
+        };
+    }
 
-// --- LÓGICA DO CRONÔMETRO ---
+    // Botão Sair
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+        btnLogout.onclick = () => {
+            if(confirm("Deseja sair da conta?")) {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            }
+        };
+    }
+}
+
 function startTimer() {
-    timerInterval = setInterval(() => {
-        timeLeft--;
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        document.getElementById('game-timer').innerText = `⏱️ ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        
-        if (timeLeft <= 0) endGame("O tempo acabou! ⏰");
+    totalTimerId = setInterval(() => {
+        totalTimeSec--;
+        const mins = Math.floor(totalTimeSec / 60);
+        const secs = totalTimeSec % 60;
+        const timerDisplay = document.getElementById('game-timer');
+        if (timerDisplay) {
+            timerDisplay.innerText = `⏱️ Tempo: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        if (totalTimeSec <= 0) endGame("O tempo acabou! ⏱️");
     }, 1000);
 }
 
-// --- GERADOR DE QUESTÕES ---
-function generateQuestion() {
-    let n1, n2;
-    const input = document.getElementById('answer-input');
-    input.value = '';
-    input.focus();
-
-    document.getElementById('game-progress').innerText = `📝 Questão: ${currentQuestion}/${totalQuestions}`;
-
-    if (modality === 'arithmetic') {
-        // Lógica de Aritmética
-        n1 = Math.floor(Math.random() * (difficulty === 'hard' ? 100 : 20));
-        n2 = Math.floor(Math.random() * (difficulty === 'hard' ? 50 : 20));
-        const op = Math.random() > 0.5 ? '+' : '-';
-        correctAnswer = op === '+' ? n1 + n2 : n1 - n2;
-        document.getElementById('question').innerText = `${n1} ${op} ${n2} = ?`;
-    } else {
-        // Lógica de Álgebra (Ex: 2x = 10)
-        let x = Math.floor(Math.random() * 10) + 1;
-        let factor = Math.floor(Math.random() * 5) + 2;
-        let result = x * factor;
-        correctAnswer = x;
-        document.getElementById('question').innerText = `${factor}x = ${result}`;
-    }
+function updateLivesDisplay() {
+    const livesSpan = document.getElementById('game-lives');
+    livesSpan.innerHTML = `Vidas: <span class="heart-red">${"❤".repeat(lives)}</span>`;
 }
 
-// --- VERIFICAR RESPOSTA ---
-function checkAnswer() {
-    const userAnswer = parseInt(document.getElementById('answer-input').value);
+// --- GERAÇÃO DE QUESTÕES ---
+
+function newQuestion() {
+    if (questionIndex >= TOTAL_QUESTIONS || lives <= 0) {
+        endGame("Desafio concluído! 🏆");
+        return;
+    }
+
+    const input = document.getElementById('answer-input');
+    if (input) { input.value = ''; input.focus(); }
+    document.getElementById('feedback').innerText = '';
+
+    if (currentModality === 'arithmetic') {
+        currentQuestion = generateArithmetic(currentDifficulty);
+    } else {
+        currentQuestion = generateAlgebra();
+    }
+
+    document.getElementById('question').innerText = currentQuestion.text;
+    questionIndex++;
+    document.getElementById('game-progress').innerText = `📝 Questão: ${questionIndex}/${TOTAL_QUESTIONS}`;
+}
+
+function generateArithmetic(difficulty) {
+    let a, b, op = ['+', '-', '*'][Math.floor(Math.random() * 3)];
+    let range = difficulty === 'hard' ? 100 : (difficulty === 'medium' ? 50 : 10);
     
-    if (userAnswer === correctAnswer) {
-        score += (difficulty === 'hard' ? 15 : 10);
-        document.getElementById('game-score').innerText = `⭐ Pontos: ${score}`;
+    a = Math.floor(Math.random() * range) + 1;
+    b = Math.floor(Math.random() * (range/2)) + 1;
+    
+    let text = `${a} ${op} ${b}`;
+    return { text: text + " = ?", answer: eval(text) };
+}
+
+function generateAlgebra() {
+    let x = Math.floor(Math.random() * 10) + 1; 
+    let a = Math.floor(Math.random() * 5) + 2;
+    let b = Math.floor(Math.random() * 10) + 1;
+    let c = a * x + b;
+    return { text: `Encontre X: ${a}x + ${b} = ${c}`, answer: x };
+}
+
+// --- VALIDAÇÃO ---
+
+function checkAnswer() {
+    const inputField = document.getElementById('answer-input');
+    const userAnswer = parseInt(inputField.value);
+    const feedback = document.getElementById('feedback');
+
+    if (isNaN(userAnswer)) return; 
+
+    if (userAnswer === currentQuestion.answer) {
+        let points = currentDifficulty === 'hard' ? 30 : (currentDifficulty === 'medium' ? 20 : 10);
+        score += points;
+        feedback.innerText = "CORRETO! 🌟";
+        feedback.style.color = "#00ce8c";
     } else {
         lives--;
-        updateLivesUI();
-        if (lives <= 0) return endGame("Suas vidas acabaram! 🔥");
+        feedback.innerText = `ERROU! Resposta: ${currentQuestion.answer}`;
+        feedback.style.color = "#ff4757";
+        updateLivesDisplay();
     }
 
-    if (currentQuestion >= totalQuestions) {
-        endGame("Parabéns! Você concluiu o desafio! 🏆");
-    } else {
-        currentQuestion++;
-        generateQuestion();
-    }
-}
-
-// --- ATUALIZAR CORAÇÕES ---
-function updateLivesUI() {
-    const hearts = "❤".repeat(lives);
-    document.getElementById('game-lives').innerHTML = ` Vidas: <span class="heart-red">${hearts}</span>`;
-}
-
-// --- FINALIZAR JOGO E SALVAR NO RENDER ---
-async function endGame(message) {
-    clearInterval(timerInterval);
-    alert(`${message}\nPontuação Final: ${score}`);
-
-    const token = localStorage.getItem('access_token');
+    document.getElementById('game-score').innerText = `⭐ Pontos: ${score}`;
     
-    // Salva a pontuação no banco de dados do Render
+    if (lives <= 0) {
+        setTimeout(() => endGame("Game Over! Sem vidas. 🔥"), 1000);
+    } else {
+        setTimeout(() => newQuestion(), 1000);
+    }
+}
+
+// --- SALVAR RESULTADO NO RENDER ---
+
+async function endGame(msg) {
+    clearInterval(totalTimerId);
+    alert(`${msg}\nPontuação Final: ${score}`);
+
     try {
         await fetch(`${API_BASE_URL}/submit_score`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}` 
             },
             body: JSON.stringify({
                 score: score,
-                difficulty: difficulty,
-                modality: modality
+                difficulty: currentDifficulty,
+                modality: currentModality
             })
         });
     } catch (err) {
-        console.error("Erro ao salvar score:", err);
+        console.error("Erro ao salvar no servidor:", err);
     }
-
+    
     window.location.href = 'game.html';
 }
