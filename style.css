@@ -1,22 +1,26 @@
+/* --- VARIÁVEIS E BASE --- */
 :root {
     --primary: #6c5ce7;
     --primary-dark: #5b4cc4;
-    --danger: #ff4757;
-    --bg: #f0f2f5;
-    --text-main: #2d3436;
+    --success: #00ce8c;
+    --bg-light: #f0f2f5;
+    --text-color: #2d3436;
+    --white: #ffffff;
 }
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--bg);
+    padding: 0;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-light);
     display: flex;
     justify-content: center;
+    align-items: center;
     min-height: 100vh;
 }
 
-/* Imagem de Fundo Fixa */
-.bg-tela {
+/* --- IMAGEM DE FUNDO --- */
+.bg-image {
     position: fixed;
     top: 0;
     left: 0;
@@ -24,69 +28,40 @@ body {
     height: 100%;
     object-fit: cover;
     z-index: -1;
-    opacity: 0.2; /* Deixa o fundo suave para ler o texto */
+    opacity: 0.3; /* Ajuste para não atrapalhar a leitura */
 }
 
-.dashboard-wrapper {
+/* --- CONTAINER DOS CARDS --- */
+.auth-container {
     width: 100%;
-    max-width: 900px;
+    max-width: 400px; /* Largura ideal para formulários */
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    box-sizing: border-box;
 }
 
-/* Cabeçalho */
-.user-header {
-    text-align: center;
-    padding: 20px 0;
-}
-
-.user-header h1 {
-    font-size: 2.2rem;
-    color: var(--primary);
-    margin-bottom: 5px;
-}
-
-.score-badge {
-    background: white;
-    display: inline-flex;
-    flex-direction: column;
-    padding: 15px 40px;
-    border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(108, 92, 231, 0.2);
-    border: 2px solid var(--primary);
-    margin-top: 15px;
-}
-
-.score-badge .label {
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #888;
-}
-
-.score-badge #display-best-score {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--primary);
-}
-
-/* Grid e Cards */
-.selection-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
-}
-
-.selection-card, .leaderboard-card {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 25px;
+.auth-card {
+    background: var(--white);
+    padding: 40px 30px;
     border-radius: 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    text-align: center;
 }
 
-h2 { margin-top: 0; color: var(--text-main); }
+/* --- LOGO E TEXTOS --- */
+.logo-title {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin: 0 0 10px 0;
+    font-weight: 800;
+}
 
+.tagline {
+    color: #636e72;
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+}
+
+/* --- FORMULÁRIOS --- */
 .input-group {
     margin-bottom: 15px;
     text-align: left;
@@ -94,74 +69,86 @@ h2 { margin-top: 0; color: var(--text-main); }
 
 .input-group label {
     display: block;
+    font-weight: 600;
     margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
+    font-size: 0.9rem;
+    color: var(--text-color);
 }
 
-select {
+input {
     width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: 2px solid #ddd;
+    padding: 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
     font-size: 1rem;
-    background: white;
+    box-sizing: border-box; /* Crucial para não estourar a largura */
+    transition: border-color 0.3s ease;
 }
 
-/* Botões */
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* --- BOTÕES --- */
 .main-btn {
     width: 100%;
-    padding: 15px;
-    background: var(--primary);
+    padding: 16px;
+    background-color: var(--primary);
     color: white;
     border: none;
     border-radius: 12px;
-    font-weight: bold;
     font-size: 1.1rem;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.main-btn:hover { background: var(--primary-dark); }
-
-.footer-area {
-    display: flex;
-    justify-content: center;
-    padding: 20px 0;
-}
-
-.btn-logout {
-    background: transparent;
-    color: var(--danger);
-    border: 2px solid var(--danger);
-    padding: 12px 40px;
-    border-radius: 12px;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
+    transition: transform 0.2s, background 0.3s;
+    margin-top: 10px;
 }
 
-.btn-logout:hover {
-    background: var(--danger);
-    color: white;
+.main-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
 }
 
-/* Ranking */
-.leaderboard-list {
-    list-style: none;
-    padding: 0;
+.main-btn:active {
+    transform: translateY(0);
 }
 
-.leaderboard-list li {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
+/* --- SWITCH (Trocar entre Login/Cadastro) --- */
+.switch-text {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #636e72;
 }
 
-/* Responsividade Mobile */
-@media (max-width: 600px) {
-    .user-header h1 { font-size: 1.8rem; }
-    .selection-grid { grid-template-columns: 1fr; }
-    .btn-logout { width: 100%; }
+.switch-link {
+    color: var(--primary);
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.switch-link:hover {
+    text-decoration: underline;
+}
+
+/* --- CLASSES DE UTILIDADE --- */
+.hidden {
+    display: none;
+}
+
+/* --- RESPONSIVIDADE PARA CELULAR --- */
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 15px;
+    }
+    
+    .auth-card {
+        padding: 30px 20px;
+        border-radius: 20px;
+    }
+    
+    .logo-title {
+        font-size: 2rem;
+    }
 }
