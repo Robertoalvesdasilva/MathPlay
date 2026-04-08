@@ -1,235 +1,167 @@
 :root {
     --primary: #6c5ce7;
-    --success: #00ce8c;
+    --primary-dark: #5b4cc4;
+    --danger: #ff4757;
     --bg: #f0f2f5;
+    --text-main: #2d3436;
 }
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: var(--bg);
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    min-height: 100vh;
 }
 
-.auth-card {
-    background: white;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-    width: 320px;
-}
-
-/* --- CORREÇÃO DO TÍTULO --- */
-.logo {
-    font-size: 2.5rem;
-    font-weight: 900;
-    margin: 0;
-    text-align: center;
-    
-    /* Gradiente */
-    background: linear-gradient(45deg, var(--primary), var(--success));
-    
-    /* O segredo para funcionar em todos os navegadores */
-    -webkit-background-clip: text;
-    background-clip: text; 
-    -webkit-text-fill-color: transparent;
-    
-    /* Caso o navegador seja muito antigo, ele usa essa cor: */
-    color: var(--primary); 
-}
-
-.tagline {
-    text-align: center;
-    margin-top: 5px;
-    color: #888;
-    font-weight: bold;
-}
-
-/* --- INPUTS E BOTÕES --- */
-input {
+/* Imagem de Fundo Fixa */
+.bg-tela {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 0.2; /* Deixa o fundo suave para ler o texto */
 }
 
-.main-btn {
-    width: 100%;
-    padding: 12px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.hidden { display: none; }
-
-.switch-text {
-    text-align: center;
-    font-size: 0.9rem;
-    margin-top: 15px;
-}
-
-/* Container do Dashboard */
 .dashboard-wrapper {
     width: 100%;
     max-width: 900px;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
 }
 
+/* Cabeçalho */
 .user-header {
     text-align: center;
-    margin-bottom: 20px;
-    color: var(--text-main); /* Mudamos para uma cor escura ou sólido */
+    padding: 20px 0;
 }
 
 .user-header h1 {
     font-size: 2.2rem;
-    color: var(--primary-color); /* Usa o roxo principal */
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1); /* Sombra leve para leitura */
+    color: var(--primary);
     margin-bottom: 5px;
 }
 
 .score-badge {
-    background: white; /* Fundo branco sólido para contraste total */
+    background: white;
     display: inline-flex;
     flex-direction: column;
-    padding: 12px 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.2); /* Sombra colorida */
-    border: 2px solid var(--primary-color); /* Borda para definir o limite */
-    margin-top: 10px;
+    padding: 15px 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(108, 92, 231, 0.2);
+    border: 2px solid var(--primary);
+    margin-top: 15px;
+}
+
+.score-badge .label {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #888;
 }
 
 .score-badge #display-best-score {
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: 900;
-    color: var(--primary-color); /* O número fica em destaque */
-    line-height: 1;
+    color: var(--primary);
 }
 
-/* Grid Responsivo: Lado a Lado no PC, Empilhado no Celular */
+/* Grid e Cards */
 .selection-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
 }
 
 .selection-card, .leaderboard-card {
-    background: white;
-    padding: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px;
     border-radius: 24px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    color: var(--text);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
-/* Estilização dos Selects (Mais bonitos no celular) */
+h2 { margin-top: 0; color: var(--text-main); }
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
 select {
     width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    border: 2px solid #eee;
-    background: #f9f9f9;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid #ddd;
     font-size: 1rem;
-    cursor: pointer;
-    appearance: none; /* Remove a setinha padrão chata */
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 15px center;
-    background-size: 15px;
+    background: white;
 }
 
-/* Lista de Ranking */
+/* Botões */
+.main-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.main-btn:hover { background: var(--primary-dark); }
+
+.footer-area {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.btn-logout {
+    background: transparent;
+    color: var(--danger);
+    border: 2px solid var(--danger);
+    padding: 12px 40px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* Ranking */
 .leaderboard-list {
     list-style: none;
     padding: 0;
-    margin-top: 20px;
 }
 
 .leaderboard-list li {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
-    padding: 12px 15px;
-    border-bottom: 1px solid #f0f0f0;
-    font-weight: 600;
 }
 
-.leaderboard-list li:nth-child(1) { color: #f1c40f; font-size: 1.2rem; } /* Ouro */
-
-#motivation-phrase {
-    font-style: italic;
-    color: var(--primary-color);
-    font-weight: 500;
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    /* Um leve brilho para chamar atenção */
-    text-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
-}
-
-
-/* --- AJUSTES PARA CELULAR --- */
+/* Responsividade Mobile */
 @media (max-width: 600px) {
-    body {
-        padding: 10px;
-        align-items: flex-start; /* Começa do topo no celular */
-        padding-top: 30px;
-    }
-
-    .selection-grid {
-        grid-template-columns: 1fr; /* Força uma coluna só */
-    }
-    
-    .user-header h1 {
-        font-size: 1.8rem;
-    }
-
-    .auth-card, .game-container {
-        width: 95%; /* Ocupa quase a tela toda */
-        padding: 20px;
-        border-radius: 15px;
-    }
-
-    .logo {
-        font-size: 2rem; /* Título menor para caber */
-    }
-
-    /* Aumenta os inputs e botões para o dedo acertar fácil */
-    input, .main-btn {
-        padding: 16px !important;
-        font-size: 1.1rem !important;
-    }
-
-    /* Se você tiver o HUD (pontos/tempo) no topo */
-    .game-header {
-        flex-direction: row;
-        justify-content: space-around;
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .question {
-        font-size: 3rem !important; /* Conta matemática grande, mas nem tanto */
-    }
-
-    /* Botões de voltar/sair no rodapé ficam um ao lado do outro */
-    .navigation-footer {
-        width: 90%;
-        bottom: 10px;
-        gap: 10px;
-    }
-
-    .btn-small {
-        flex: 1; /* Faz os dois botões terem o mesmo tamanho */
-        text-align: center;
-    }
+    .user-header h1 { font-size: 1.8rem; }
+    .selection-grid { grid-template-columns: 1fr; }
+    .btn-logout { width: 100%; }
 }
