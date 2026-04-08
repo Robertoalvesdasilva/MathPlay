@@ -1,4 +1,4 @@
-/* --- VARIÁVEIS E BASE --- */
+/* --- 1. VARIÁVEIS E BASE --- */
 :root {
     --primary: #6c5ce7;
     --primary-dark: #5b4cc4;
@@ -6,6 +6,7 @@
     --bg-light: #f0f2f5;
     --text-color: #2d3436;
     --white: #ffffff;
+    --danger: #ff4757;
 }
 
 body {
@@ -15,13 +16,12 @@ body {
     background-color: var(--bg-light);
     display: flex;
     justify-content: center;
-    /* Mudamos para flex-start para o conteúdo longo do jogo não sumir no topo */
     align-items: flex-start; 
     min-height: 100vh;
     overflow-x: hidden;
 }
 
-/* --- IMAGEM DE FUNDO (FIXA) --- */
+/* Imagem de Fundo */
 .bg-tela {
     position: fixed;
     top: 0;
@@ -34,12 +34,12 @@ body {
     pointer-events: none;
 }
 
-/* --- ESTILO DO LOGIN/CADASTRO (auth-card) --- */
+/* --- 2. AUTH / LOGIN --- */
 .auth-container {
     width: 100%;
     max-width: 400px;
     padding: 20px;
-    margin-top: 10vh; /* Centraliza visualmente no login */
+    margin-top: 10vh;
 }
 
 .auth-card {
@@ -50,78 +50,103 @@ body {
     text-align: center;
 }
 
-/* --- ESTILO DO DASHBOARD (game.html) --- */
+/* --- 3. DASHBOARD E GRID (LADO A LADO NO PC) --- */
 .dashboard-wrapper {
     width: 100%;
-    max-width: 900px;
+    max-width: 1200px;
     padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    margin-top: 20px;
 }
 
 .user-header {
     text-align: center;
-    color: var(--text-color);
+    margin-top: 20px;
 }
 
-.score-badge {
-    background: white;
-    display: inline-flex;
-    flex-direction: column;
-    padding: 15px 30px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.2);
-    border: 2px solid var(--primary);
-}
-
-#display-best-score {
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--primary);
-}
-
-/* Grid de Seleção (Lado a Lado) */
+/* O "Pulo do Gato": Flexbox para os cards principais */
 .selection-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
+    display: flex;
+    flex-direction: row; /* Lado a lado */
+    justify-content: center;
+    align-items: stretch; /* Mesma altura */
+    gap: 30px;
+    margin-top: 20px;
 }
 
-.selection-card, .leaderboard-card {
-    background: white;
+.selection-card, .leaderboard-full-card {
+    background: rgba(255, 255, 255, 0.95);
     padding: 25px;
     border-radius: 24px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    flex: 1; /* Divide o espaço */
+    min-width: 350px;
 }
 
-/* --- FORMULÁRIOS E INPUTS (Comum aos dois) --- */
-.input-group {
-    margin-bottom: 15px;
-    text-align: left;
+/* --- 4. RANKING (COLUNAS INTERNAS) --- */
+.leaderboard-columns {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
 }
 
-.input-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 5px;
+.rank-col {
+    flex: 1;
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 15px;
+    min-width: 200px;
 }
+
+.rank-col h3 {
+    text-align: center;
+    color: var(--primary);
+    border-bottom: 2px solid var(--bg-light);
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+}
+
+.leaderboard-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 5px;
+    border-bottom: 1px solid #edf2f7;
+    font-size: 0.95rem;
+}
+
+.leaderboard-list li b { color: var(--success); }
+
+/* --- 5. COMPONENTES (BOTÕES/INPUTS) --- */
+.score-badge {
+    background: white;
+    padding: 15px 30px;
+    border-radius: 15px;
+    border: 2px solid var(--primary);
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.input-group { margin-bottom: 15px; text-align: left; }
+.input-group label { display: block; font-weight: 600; margin-bottom: 5px; }
 
 input, select {
     width: 100%;
     padding: 14px;
     border: 2px solid #e2e8f0;
     border-radius: 12px;
-    font-size: 1rem;
     box-sizing: border-box;
 }
 
-/* --- BOTÕES --- */
-.main-btn {
+.main-btn, .btn-send {
     width: 100%;
     padding: 16px;
-    background-color: var(--primary);
+    background: var(--primary);
     color: white;
     border: none;
     border-radius: 12px;
@@ -132,17 +157,10 @@ input, select {
 
 .main-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
-/* Botão Sair */
-.footer-area {
-    display: flex;
-    justify-content: center;
-    padding: 20px 0;
-}
-
 .btn-logout {
     background: transparent;
-    color: #ff4757;
-    border: 2px solid #ff4757;
+    color: var(--danger);
+    border: 2px solid var(--danger);
     padding: 12px 40px;
     border-radius: 12px;
     font-weight: bold;
@@ -150,249 +168,25 @@ input, select {
     transition: 0.3s;
 }
 
-.btn-logout:hover { background: #ff4757; color: white; }
+.btn-logout:hover { background: var(--danger); color: white; }
 
-/* Ranking */
-.leaderboard-list {
-    list-style: none;
-    padding: 0;
-}
+/* HUD do Jogo */
+#game-lives { color: var(--danger); font-weight: bold; }
 
-.leaderboard-list li {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-}
-
-.hidden { display: none; }
-
-/* --- RESPONSIVIDADE --- */
-@media (max-width: 600px) {
-    .selection-grid { grid-template-columns: 1fr; }
-    .btn-logout { width: 100%; }
-}
-/* Container dos botões no rodapé */
-.game-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 15px 25px; /* Espaço nas bordas */
-    display: flex;
-    justify-content: space-between; /* Um para cada lado */
-    align-items: center;
-    box-sizing: border-box;
-    z-index: 10;
-}
-
-/* Estilo comum para os botões do rodapé */
-.btn-secondary, .btn-danger {
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: 0.3s;
-    font-size: 0.9rem;
-}
-
-/* Botão Voltar (Esquerda) */
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-.btn-secondary:hover {
-    background: white;
-    color: var(--primary);
-}
-
-/* Botão Sair (Direita) */
-.btn-danger {
-    background: rgba(255, 71, 87, 0.2);
-    color: #ff4757;
-    border-color: #ff4757;
-}
-
-.btn-danger:hover {
-    background: #ff4757;
-    color: white;
-}
-
-/* Ajuste para celular: botões um pouco menores para não apertar */
-@media (max-width: 400px) {
-    .game-footer {
-        padding: 10px 15px;
-    }
-    .btn-secondary, .btn-danger {
-        padding: 8px 15px;
-    }
-}
-
-/* Estilo para as Vidas (Coração Vermelho) */
-#game-lives {
-    color: #ff4757; /* Vermelho vivo */
-    font-weight: bold;
-    text-shadow: 0 0 5px rgba(255, 71, 87, 0.3);
-}
-
-/* Cores para os marcadores do HUD */
-.hud-item.user { color: #54a0ff; }       /* Azul */
-.hud-item.difficulty { color: #feca57; } /* Amarelo/Laranja */
-.hud-item.modality { color: #ff9f43; }   /* Laranja Escuro */
-.hud-item.score { color: #1dd1a1; }      /* Verde Esmeralda */
-.hud-item.timer { color: #ee5253; }      /* Vermelho */
-.hud-item.progress { color: #5f27cd; }   /* Roxo */
-
-/* Botão Enviar Resposta (Destaque) */
-.btn-send {
-    background: linear-gradient(135deg, #00ce8c 0%, #00a36f 100%);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 206, 140, 0.3);
-    transition: 0.3s;
-    width: 100%;
-}
-
-.btn-send:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(0, 206, 140, 0.4);
-}
-
-/* Estilo das Colunas do Ranking */
-.leaderboard-full-card {
-    background: white;
-    padding: 25px;
-    border-radius: 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    grid-column: 1 / -1; /* Ocupa a largura toda no grid */
-}
-
-.leaderboard-columns {
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap; /* Para funcionar bem no celular */
-}
-
-.rank-col {
-    flex: 1;
-    min-width: 250px;
-}
-
-.rank-col h3 {
-    text-align: center;
-    color: var(--primary);
-    border-bottom: 2px solid #f0f2f5;
-    padding-bottom: 10px;
-}
-
-.leaderboard-list li {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    font-size: 0.95rem;
-}
-
-.leaderboard-list li b {
-    color: var(--success);
-}
-/* Container principal do Dashboard */
-.dashboard-wrapper {
-    max-width: 1000px;
-    margin: 20px auto;
-    padding: 20px;
-}
-
-/* Grid que separa a configuração do ranking */
-.selection-grid {
-    display: grid;
-    grid-template-columns: 1fr; /* Padrão celular */
-    gap: 20px;
-    margin-top: 20px;
-}
-
-/* No computador, o card de configuração e o ranking ficam em destaque */
-@media (min-width: 768px) {
+/* --- 6. RESPONSIVIDADE (CELULAR) --- */
+@media (max-width: 900px) {
     .selection-grid {
-        grid-template-columns: 350px 1fr; /* Coluna menor para config, maior para ranking */
+        flex-direction: column; /* Empilha no celular */
+        align-items: center;
     }
-}
 
-/* Card do Ranking (Ocupa as duas colunas se necessário) */
-.leaderboard-full-card {
-    background: white;
-    padding: 25px;
-    border-radius: 24px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
+    .selection-card, .leaderboard-full-card {
+        width: 100%;
+        min-width: unset;
+        max-width: 500px;
+    }
 
-/* Estrutura das Colunas Lado a Lado */
-.leaderboard-columns {
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap; /* Quebra linha no celular */
-}
-
-.rank-col {
-    flex: 1;
-    min-width: 200px;
-}
-
-.rank-col h3 {
-    text-align: center;
-    color: var(--primary);
-    border-bottom: 2px solid #f0f2f5;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
-
-/* Lista de jogadores */
-.leaderboard-list {
-    list-style: none;
-    padding: 0;
-}
-
-.leaderboard-list li {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 5px;
-    border-bottom: 1px solid #f9f9f9;
-    font-size: 0.9rem;
-}
-
-.leaderboard-list li span {
-    font-weight: 500;
-}
-
-.leaderboard-list li b {
-    color: var(--success); /* Aquele verde que você definiu */
-}
-
-.leaderboard-columns {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 15px;
-}
-.rank-col {
-    flex: 1;
-    min-width: 200px;
-    background: #f1f5f9;
-    padding: 15px;
-    border-radius: 15px;
-}
-.leaderboard-list { list-style: none; padding: 0; }
-.leaderboard-list li {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid #ddd;
+    .leaderboard-columns {
+        flex-direction: column; /* Colunas do ranking também empilham */
+    }
 }
