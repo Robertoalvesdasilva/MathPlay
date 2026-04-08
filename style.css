@@ -17,20 +17,24 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    /* Adicione estas duas linhas abaixo: */
+    width: 100%;
+    overflow-x: hidden; /* Evita que a página role para os lados */
 }
 
-/* --- IMAGEM DE FUNDO --- */
-.bg-image {
-    position: fixed;
+
+/* --- IMAGEM DE FUNDO (CORRIGIDO) --- */
+.bg-tela {
+    position: fixed; /* Fixa a imagem no fundo sem ocupar espaço no layout */
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;    /* Ocupa toda a largura da tela */
+    height: 100vh;   /* Ocupa toda a altura da tela */
     object-fit: cover;
-    z-index: -1;
-    opacity: 0.3; /* Ajuste para não atrapalhar a leitura */
+    z-index: -1;     /* Garante que fique atrás de tudo */
+    opacity: 0.3;    
+    pointer-events: none; /* Garante que a imagem não atrapalhe os cliques nos botões */
 }
-
 /* --- CONTAINER DOS CARDS --- */
 .auth-container {
     width: 100%;
