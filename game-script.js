@@ -1,113 +1,113 @@
-// Link do seu servidor no Render
-const API_BASE_URL = 'https://mathplay-api.onrender.com';
+// Substitua pela URL do seu servidor no Render
+const API_BASE_URL = "https://mathplay-api.onrender.com"; 
 
-// --- 1. FUNÇÕES DE BUSCA DE DADOS ---
+// --- INICIALIZAÇÃO AO CARREGAR A PÁGINA ---
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuth();
+    loadUserData();
+    loadLeaderboards();
+    setupEventListeners();
+});
 
-// Busca a Melhor Pontuação e Nome Real do Servidor
-async function carregarDadosDoUsuario() {
-    const token = localStorage.getItem('mathplay_token');
-    const displayScore = document.getElementById('display-best-score');
-    const displayUser = document.getElementById('welcome-username');
+// --- VERIFICAÇÃO DE LOGIN ---
+function checkAuth() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = 'index.html'; // Volta para o login se não tiver token
+    }
+}
 
-    if (!token) return;
-
+// --- CARREGAR DADOS DO USUÁRIO (NOME E RECORDE) ---
+async function loadUserData() {
+    const token = localStorage.getItem('access_token');
     try {
-        const res = await fetch(`${API_BASE_URL}/me`, {
+        const response = await fetch(`${API_BASE_URL}/me`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await res.json();
 
-        if (res.ok) {
-            // Atualiza a pontuação na tela (se vier nulo, coloca 0)
-            if (displayScore) displayScore.innerText = data.best_score || 0;
-            // Garante que o nome exibido seja o do banco de dados
-            if (displayUser) displayUser.innerText = data.username || "Jogador";
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById('welcome-username').innerText = data.username;
+            document.getElementById('display-best-score').innerText = data.best_score;
+            setMotivationPhrase();
+        } else {
+            logout(); // Se o token estiver vencido, desloga
         }
-    } catch (err) {
-        console.error("Erro ao buscar dados do perfil:", err);
+    } catch (error) {
+        console.error("Erro ao carregar dados do usuário:", error);
     }
 }
 
-// Carrega o Top 10 Global
-async function carregarRanking() {
-    const listaUI = document.getElementById('leaderboard-list');
+// --- CARREGAR OS RANKINGS EM COLUNAS ---
+async function loadLeaderboards() {
     try {
         const response = await fetch(`${API_BASE_URL}/leaderboard`);
-        const dados = await response.json();
-        
-        if (!listaUI) return;
+        const data = await response.json();
 
-        if (dados.length === 0) {
-            listaUI.innerHTML = "<li>Nenhum recorde ainda! 🚀</li>";
-            return;
+        const arithList = document.getElementById('list-arithmetic');
+        const algeList = document.getElementById('list-algebra');
+
+        // Limpa e Preenche Aritmética
+        if (arithList) {
+            arithList.innerHTML = data.arithmetic.length > 0 
+                ? data.arithmetic.map((p, i) => `<li><span>${i+1}º ${p.username}</span> <b>${p.total} pts</b></li>`).join('')
+                : '<li>Ainda não há pontuações</li>';
         }
 
-        listaUI.innerHTML = dados.map((item, index) => `
-            <li>
-                <strong>${index + 1}º</strong> ${item.username} - ${item.score} pts
-            </li>
-        `).join('');
-    } catch (erro) {
-        console.error("Erro ao carregar ranking:", erro);
-        if (listaUI) listaUI.innerHTML = "<li>Servidor Offline</li>";
+        // Limpa e Preenche Álgebra
+        if (algeList) {
+            algeList.innerHTML = data.algebra.length > 0 
+                ? data.algebra.map((p, i) => `<li><span>${i+1}º ${p.username}</span> <b>${p.total} pts</b></li>`).join('')
+                : '<li>Ainda não há pontuações</li>';
+        }
+
+    } catch (error) {
+        console.error("Erro ao carregar rankings:", error);
     }
 }
 
-// --- 2. FUNÇÕES DE INTERFACE ---
-
-function exibirFraseMotivacional() {
-    const frases = [
-        "O topo do ranking espera por você! 🏆",
-        "Cada acerto te deixa mais perto do 1º lugar!",
-        "Mostre que você é o mestre dos números! 🧠",
-        "O ranking global é o seu próximo desafio!",
-        "Quem será o próximo número 1? Pode ser você! 🔥",
-        "Desafie seus limites e suba no Top 10!",
-        "Matematika+ é para os fortes. Vamos pra cima! 👍"
-    ];
-    const campoFrase = document.getElementById('motivation-phrase');
-    if (campoFrase) {
-        const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
-        campoFrase.innerText = fraseAleatoria;
-    }
-}
-
-function iniciarJogo() {
-    const dificuldade = document.getElementById('difficulty-select').value;
-    const modalidade = document.getElementById('modality-select').value;
-    
-    // Redireciona com os parâmetros de dificuldade
-    window.location.href = `play.html?difficulty=${dificuldade}&modality=${modalidade}`;
-}
-
-// --- 3. INICIALIZAÇÃO (EVENT LISTENER ÚNICO) ---
-
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('mathplay_token');
-
-    // Segurança: Se não tiver token, volta para o login
-    if (!token) {
-        window.location.href = 'index.html';
-        return;
-    }
-
-    // Carregamento de Dados
-    exibirFraseMotivacional();
-    carregarDadosDoUsuario(); // Aqui carrega a Melhor Pontuação
-    carregarRanking();
-
-    // Configuração do Botão "Começar Jogo"
-    const btnComecar = document.getElementById('start-game-button');
-    if (btnComecar) {
-        btnComecar.addEventListener('click', iniciarJogo);
-    }
-
-    // Configuração do Botão "Sair"
-    const btnSair = document.getElementById('logout-button');
-    if (btnSair) {
-        btnSair.addEventListener('click', () => {
-            localStorage.clear();
-            window.location.href = 'index.html';
+// --- CONFIGURAÇÃO DA PARTIDA ---
+function setupEventListeners() {
+    // Botão Iniciar Jogo
+    const startBtn = document.getElementById('start-game-button');
+    if (startBtn) {
+        startBtn.addEventListener('click', () => {
+            const difficulty = document.getElementById('difficulty-select').value;
+            const modality = document.getElementById('modality-select').value;
+            
+            // Salva as configurações para usar na tela de jogo
+            localStorage.setItem('game_difficulty', difficulty);
+            localStorage.setItem('game_modality', modality);
+            
+            // Redireciona para a tela onde o jogo acontece de fato
+            window.location.href = 'match.html'; 
         });
     }
-});
+
+    // Botão Sair
+    const logoutBtn = document.getElementById('logout-button');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
+    }
+}
+
+// --- FRASES DE MOTIVAÇÃO ---
+function setMotivationPhrase() {
+    const phrases = [
+        "Matemática é o alfabeto com que Deus escreveu o universo. ✨",
+        "Pronto para bater seu recorde hoje? 🚀",
+        "O erro é o primeiro passo para o acerto! 💪",
+        "Desafie sua mente e conquiste o ranking! 🏆"
+    ];
+    const phraseElement = document.getElementById('motivation-phrase');
+    if (phraseElement) {
+        phraseElement.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+    }
+}
+
+// --- LOGOUT ---
+function logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
+    window.location.href = 'index.html';
+}
